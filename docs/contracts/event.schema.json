@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orglab.example/schemas/event-v1.json",
+  "title": "OrgLab Sentinel Event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "schemaVersion", "dataMode", "ticker", "eventType", "title", "asOf", "sourceRefs"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "const": "1.0" },
+    "dataMode": { "enum": ["MOCK", "LIVE_DELAYED", "LIVE"] },
+    "ticker": { "type": "string", "pattern": "^[A-Z.]{1,10}$" },
+    "eventType": { "enum": ["FILING_SIGNAL", "SUPPLY_CHAIN", "UNVERIFIED_RUMOR"] },
+    "title": { "type": "string", "minLength": 1 },
+    "asOf": { "type": "string", "minLength": 1 },
+    "sourceRefs": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true }
+  }
+}
+

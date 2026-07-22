@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://orglab.example/schemas/evidence-brief-v1.json",
+  "title": "OrgLab Sentinel EvidenceBrief v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "schemaVersion",
+    "agent",
+    "dataMode",
+    "provider",
+    "sourceClass",
+    "asOf",
+    "status",
+    "confidence",
+    "headline",
+    "summary",
+    "findings",
+    "evidence",
+    "gaps"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "schemaVersion": { "const": "1.0" },
+    "agent": { "enum": ["news", "filing"] },
+    "dataMode": { "enum": ["MOCK", "LIVE_DELAYED", "LIVE"] },
+    "provider": { "type": "string", "minLength": 1 },
+    "sourceClass": { "enum": ["primary_filing", "issuer_release", "licensed_news", "social", "mixed"] },
+    "asOf": { "type": "string", "minLength": 1 },
+    "status": { "type": "string", "minLength": 1 },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 100 },
+    "headline": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 },
+    "findings": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "gaps": { "type": "array", "items": { "type": "string" } },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "locator", "tier", "verified", "freshness", "note"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "label": { "type": "string", "minLength": 1 },
+          "locator": { "type": "string", "minLength": 1 },
+          "tier": { "type": "string", "minLength": 1 },
+          "verified": { "type": "boolean" },
+          "freshness": { "type": "string", "minLength": 1 },
+          "note": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}
