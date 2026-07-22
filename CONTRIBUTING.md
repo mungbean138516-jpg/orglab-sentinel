@@ -20,7 +20,7 @@ The first two stages have distinct source ownership and may run in parallel. Nei
 - Do not turn an unverified report into a fact. Preserve source, timestamp, freshness, confidence, and limitations.
 - Do not expose API keys, account data, or other secrets in code, fixtures, screenshots, logs, or pull requests.
 - Keep recommendations evidence-backed and phrased as information for user review, such as observe, verify, or consider a position-adjustment range.
-- Keep NVDA, AAPL, and TSLA plus the three canonical demo events working unless an issue explicitly changes the demo scope.
+- Keep NVDA, AAPL, and TSLA plus the three canonical demo events working unless an agreed change explicitly updates the demo scope.
 - Treat the Supervisor as a synthesizer, not a new source. It must retain disagreements and citations from both specialist briefs.
 
 ## Structured evidence contract
@@ -37,15 +37,11 @@ Changes to agent output should retain, at minimum:
 
 The final risk report should clearly separate sourced facts from model inference and state that user confirmation is required.
 
-## Claim an issue before coding
+## Start from the complete baseline
 
-1. Choose an unassigned task issue marked ready.
-2. Comment `/claim` with the role you are covering and your expected completion window.
-3. Assign yourself. If you cannot self-assign, ask the Product/Team Lead to assign you before implementation begins.
-4. Create a focused branch named `role/issue-number-short-name`, for example `data/42-sec-fixtures`.
-5. Open a draft pull request early and link it with `Closes #42`.
+Issues are optional. Pull the latest `main`, then create a focused branch such as `data/sec-fixtures` or `frontend/evidence-drawer`. Small edits may follow the team's direct-commit policy; cross-cutting changes should open a Draft PR early.
 
-One person should normally own only one active implementation issue. Coordinate in the issue before changing a file already named in another active task.
+Before changing `App.jsx`, `styles.css`, a shared contract, or another file already being edited, coordinate with the current owner. Keep one primary implementation area per contributor so the final integration remains reviewable.
 
 ## Local checks
 
@@ -62,7 +58,7 @@ Run all checks before requesting review. If a user-facing state changes, include
 Keep pull requests small enough to review. A pull request should include:
 
 - the user-visible outcome;
-- the linked issue and acceptance criteria;
+- the intended outcome and acceptance criteria;
 - files or pipeline stages affected;
 - test/build results;
 - screenshots for UI changes;

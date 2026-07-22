@@ -1,8 +1,20 @@
 {
   "name": "orglab-sentinel-prototype",
   "version": "0.2.0",
+  "description": "Mock-first multi-agent portfolio risk alert and organizational experiment prototype.",
   "private": true,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mungbean138516-jpg/orglab-sentinel.git"
+  },
+  "homepage": "https://github.com/mungbean138516-jpg/orglab-sentinel#readme",
+  "keywords": [
+    "multi-agent",
+    "risk-monitoring",
+    "evidence-provenance",
+    "organizational-design"
+  ],
   "engines": {
     "node": ">=22.12.0"
   },

@@ -1,6 +1,6 @@
 # OrgLab Sentinel Team Tasks
 
-This board defines ownership boundaries for the eight-person team. GitHub issues and pull requests are the live source of truth; names should be claimed there instead of being hard-coded in this file.
+This board defines lightweight ownership boundaries for the eight-person team. It is a coordination guide, not a requirement to create eight GitHub issues.
 
 ## Authoritative product flow
 
@@ -17,7 +17,7 @@ Stages 1 and 2 own distinct sources and may execute in parallel. The Supervisor 
 
 | Role | Primary ownership | First sprint task | Acceptance signal |
 | --- | --- | --- | --- |
-| 1. Product / Team Lead | Scope, issue readiness, release path, opening and closing narrative | Freeze the three canonical events and end-to-end demo script | One issue per deliverable, dependencies named, three-minute demo path rehearsed |
+| 1. Product / Team Lead | Scope, release path, opening and closing narrative | Freeze the three canonical events and end-to-end demo script | Dependencies named and three-minute demo path rehearsed |
 | 2. Architecture / Backend | Event schema, EvidenceBrief contract, orchestration, Supervisor boundary | Define the EvidenceBrief and UserRiskReport contracts | News and filing briefs can be validated independently and merged without losing provenance |
 | 3. Agent Engineering | Prompts/rules, structured output, failure recovery | Implement or document the two specialist behaviors and Supervisor reconciliation | Rumor, missing-source, and conflicting-evidence cases produce safe structured states |
 | 4. Data Engineering | Mock fixtures, SEC adapter, optional news adapter, caching/fallback | Build deterministic fixtures first; then add SEC EDGAR behind the adapter | Demo works offline and live failure falls back visibly without fabricated data |
@@ -26,18 +26,16 @@ Stages 1 and 2 own distinct sources and may execute in parallel. The Supervisor 
 | 7. Industry / Compliance | User pain, competitors, disclaimers, risk language | Review every action label and report disclaimer | No brokerage connection, execution claim, guaranteed outcome, or unsupported certainty |
 | 8. Deck / Visual | Story, charts, timing, backup recording | Align the 20-minute deck and offline demo | Visual language matches the product and a backup video covers the full demo path |
 
-## Issue-claim workflow
+## Lightweight collaboration workflow
 
-1. The Product/Team Lead creates or marks a task ready only after acceptance criteria and dependencies are clear.
-2. A teammate comments `/claim`, names the role lane, and gives an expected completion window.
-3. The teammate self-assigns, or the lead assigns them if permissions do not allow self-assignment.
-4. Work starts on `role/issue-number-short-name`; one active implementation issue per person is the default.
-5. Open a draft PR early, link `Closes #<issue>`, and list shared files before editing them.
-6. Post a short issue update when the task crosses a pipeline boundary or becomes blocked.
-7. If no progress update is possible for 24 hours, unassign or agree on a handoff so another teammate can claim it.
-8. Merge only after CI, acceptance criteria, and the required cross-role review pass.
+1. Treat the latest `main` as the complete working baseline.
+2. Choose one primary role lane and state the intended outcome to the team; a GitHub issue is optional.
+3. Use a focused branch such as `data/sec-fixtures` or `frontend/evidence-drawer` for non-trivial work.
+4. Coordinate before editing a shared file already owned by another active change.
+5. Open a Draft PR early for cross-module changes and list the shared files it touches.
+6. Merge only after CI, acceptance criteria, and the relevant cross-role review pass.
 
-## Ready-to-file priority tasks
+## Follow-up backlog
 
 ### P0 — stable collaborative baseline
 
