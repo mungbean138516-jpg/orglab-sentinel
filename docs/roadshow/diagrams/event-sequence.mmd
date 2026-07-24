@@ -1,0 +1,36 @@
+sequenceDiagram
+    autonumber
+    actor U as 用户
+    participant E as 事件入口
+    participant N as 新闻/舆情 Agent
+    participant D as 公告/数据 Agent
+    participant S as 主管 Agent
+    participant R as 风险 Agent
+
+    U->>E: 选择 A 股 MOCK 事件
+    par 来源专项逻辑并行
+        E->>N: Event
+        N-->>S: EvidenceBrief(news)
+    and
+        E->>D: Event
+        D-->>S: EvidenceBrief(data)
+    end
+
+    S->>S: 校验合同、比较一致/冲突/未知
+
+    alt 两份简报完整且可综合
+        S-->>R: SupervisorSynthesis
+        R-->>U: UserRiskReport + 核验清单
+    else 单一来源超时
+        S->>S: 标记来源覆盖不足
+        S-->>R: WATCH_AND_VERIFY
+        R-->>U: 暂不估计，等待重跑
+    else 证据方向冲突
+        S->>S: 保留冲突并隔离
+        S-->>R: QUARANTINE_SOURCE
+        R-->>U: VERIFICATION_ONLY
+    end
+
+    U->>R: 标记已阅读
+    Note over U,R: 不连接券商 · 不自动交易
+

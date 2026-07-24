@@ -1,0 +1,37 @@
+flowchart LR
+    subgraph CURRENT["当前 Prototype · IMPLEMENTED / MOCK"]
+        UI["React / Vite<br/>风险监控台 · Agent 团队 · 组织实验室"]
+        SM["确定性状态机<br/>六阶段回放"]
+        FX["A 股固定 fixtures<br/>MOCK DATA"]
+        CT["JSON Schema<br/>Patch 证据账本"]
+        HG["用户人工门禁<br/>只记录已阅读"]
+
+        UI --> SM --> FX
+        FX --> CT --> HG
+    end
+
+    subgraph TARGET["概念级目标架构 · PLANNED"]
+        ENTRY["通义 / 夸克 / 钉钉入口"]
+        BL["百炼工作流编排"]
+        QA["通义千问角色 Agent"]
+        AD["经授权的 A 股适配器"]
+        EV["魔搭测试集与评测"]
+        REVIEW["人工复核与治理"]
+
+        ENTRY --> BL
+        BL --> QA
+        AD --> QA
+        QA --> REVIEW
+        EV -.横向评测.-> QA
+    end
+
+    CT -.合同保持不变<br/>替换合同两端实现.-> BL
+
+    classDef implemented fill:#0f766e,color:#ffffff,stroke:#5eead4,stroke-width:2px;
+    classDef planned fill:#312e81,color:#ffffff,stroke:#a5b4fc,stroke-width:2px;
+    classDef gate fill:#14532d,color:#ffffff,stroke:#86efac,stroke-width:2px;
+
+    class UI,SM,FX,CT implemented;
+    class HG,REVIEW gate;
+    class ENTRY,BL,QA,AD,EV planned;
+

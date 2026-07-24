@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://orglab.example/schemas/supervisor-synthesis-v1.json",
-  "title": "OrgLab Sentinel SupervisorSynthesis v1",
+  "$id": "https://orglab.example/schemas/supervisor-synthesis-v1.1.json",
+  "title": "OrgLab Sentinel SupervisorSynthesis v1.1",
   "type": "object",
   "additionalProperties": false,
   "required": ["id", "schemaVersion", "inputBriefIds", "agreement", "conflicts", "missing", "decision"],
   "properties": {
     "id": { "type": "string", "minLength": 1 },
-    "schemaVersion": { "const": "1.0" },
+    "schemaVersion": { "const": "1.1" },
     "inputBriefIds": { "type": "array", "items": { "type": "string" }, "minItems": 2, "maxItems": 2, "uniqueItems": true },
     "agreement": { "type": "string", "minLength": 1 },
     "conflicts": { "type": "array", "items": { "type": "string" } },
@@ -15,4 +15,3 @@
     "decision": { "enum": ["ELEVATE_TO_RISK_REVIEW", "WATCH_AND_VERIFY", "QUARANTINE_SOURCE"] }
   }
 }
-

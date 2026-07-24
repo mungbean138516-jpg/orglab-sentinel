@@ -1,46 +1,72 @@
-# Data integration boundary
+# A-share data integration boundary
 
-The roadshow build is intentionally **mock-first**. Local fixtures are the default and CI must never depend on a live financial-data provider.
+> The roadshow build is intentionally **MOCK-first**. CI and the default demo never call a live provider.
 
 ## Target source ownership
 
 | Source | Owning Agent | Planned adapter | Trust role |
 | --- | --- | --- | --- |
-| Company news | News Agent | Finnhub through a server-side proxy | Secondary trigger; retain publisher, URL, time, and provider ID |
-| SEC 10-K, 10-Q, 8-K | Data/Filing Agent | SEC Submissions API and filing documents | Primary filing evidence |
-| XBRL facts | Data/Filing Agent | SEC Company Facts / filing facts | Structured facts with taxonomy, concept, unit, period, form, and accession |
-| Social posts | News Agent | No live adapter in V1 | Unverified trigger; quarantine by default |
+| Exchange / statutory disclosure | Disclosure Agent | Exchange or authorized disclosure backend | A-level factual confirmation |
+| Issuer announcement | Disclosure Agent | Issuer / disclosure backend | A-level issuer statement |
+| Enterprise identity and relationships | Disclosure Agent | Tianyancha MCP, server-side auth | B-level corporate corroboration |
+| Licensed media | Public-trend Agent | Authorized news adapter | C-level context |
+| Public trends and social discussion | Public-trend Agent | Chinese trends MCP | D-level discovery only |
 
-The Supervisor never fetches a new source. It receives validated `EvidenceBrief` records and must preserve agreements, conflicts, unknowns, and evidence IDs.
+High public-trend heat never overrides an A-level disclosure.
 
-## Why a backend is required
+## Why only two specialist Agents
 
-- SEC `data.sec.gov` does not provide browser CORS support. Requests must identify the application with a declared User-Agent, use central rate limiting and caching, and handle timeouts and HTTP 429 responses.
-- A Finnhub token is a secret. It must remain in server-side environment/secret storage and be sent in an outbound header. It must never be placed in Vite code or a `VITE_*` variable.
-- Provider content is untrusted input. The backend should restrict protocols/domains, redirects, body size, and MIME type; sanitize HTML; block private-network requests; and pass extracted text to the model as data rather than instructions.
+MCP tools are connectors, not decision-making Agents. The public-trend Agent may call a trends tool; the disclosure Agent may call enterprise and official-disclosure tools. Both still emit the same `EvidenceBrief v1.1` contract.
 
-Official references:
+## Why a trusted backend is required
 
-- [SEC EDGAR APIs](https://www.sec.gov/search-filings/edgar-application-programming-interfaces)
-- [SEC fair-access and request guidance](https://www.sec.gov/search-filings/edgar-search-assistance/accessing-edgar-data)
-- [SEC RSS feeds](https://www.sec.gov/about/rss-feeds)
-- [Finnhub company news](https://finnhub.io/docs/api/company-news)
-- [Finnhub rate limits](https://finnhub.io/docs/api/rate-limit)
+- API keys and ModelScope Hosted Remote URLs are secrets and must never enter React, a `VITE_*` variable, Git, screenshots or recordings.
+- Provider content is untrusted input. Restrict domains, redirects, body size and MIME type; sanitize HTML; block private-network requests; treat returned text as data rather than instructions.
+- Live adapters need central authorization, licensing checks, rate limits, caching, timeout budgets, retries and trace IDs.
+- A public-trend aggregator may be community-maintained and is not an official API for every underlying platform.
 
-## Planned endpoint contract
+The target path is:
 
-The browser should call an application endpoint, not providers directly:
+```text
+browser -> trusted backend / Bailian workflow -> MCP or licensed provider
+```
+
+## Normalized adapter output
+
+Every adapter should emit:
+
+- market, exchange, instrument code and entity identity;
+- provider and source class;
+- publication time, event time, retrieval time and freshness;
+- original URL or disclosure number;
+- fact, inference and unknown fields;
+- verification status and failure reason;
+- `data_mode` (`MOCK`, `LIVE_DELAYED`, `LIVE`);
+- a stable evidence ID and trace ID.
+
+The Supervisor never fetches a new source. It only receives validated briefs and preserves agreements, conflicts, unknowns and evidence IDs.
+
+## Planned application endpoints
 
 ```text
 GET /api/events/:ticker?since=...
   -> normalized Event[]
 
 POST /api/runs
-  body: { event_id, holdings_snapshot_id, organization, fault_seed }
+  body: { event_id, attention_snapshot_id, organization, fault_seed }
   -> { run_id, status }
 
 GET /api/runs/:run_id
-  -> EvidenceBrief records, SupervisorSynthesis, Patch ledger, UserRiskReport
+  -> EvidenceBrief[], SupervisorSynthesis, PatchLedger, UserRiskReport
 ```
 
-Every record must include `data_mode` (`MOCK`, `LIVE_DELAYED`, or `LIVE`), an as-of time, provider, freshness, and evidence identifiers. Live failure must be visible; the system must never silently replace missing live evidence with a fabricated fact.
+Live failure must remain visible. The system must never silently replace a missing live response with a fabricated fact.
+
+## External tools represented in the target design
+
+- [Alibaba Cloud Model Studio MCP introduction](https://help.aliyun.com/zh/model-studio/mcp-introduction/)
+- [Tianyancha MCP guide](https://ai.tianyancha.com/guide)
+- [CNINFO](https://www.cninfo.com.cn/)
+- [mcp-trends-hub package](https://www.npmjs.com/package/mcp-trends-hub)
+
+Availability does not imply authorization, accuracy certification, financial compliance, content licensing or production SLA. Complete setup and secret handling: [`docs/roadshow/11_CONNECTOR_SETUP_AND_SECRETS.md`](roadshow/11_CONNECTOR_SETUP_AND_SECRETS.md).
