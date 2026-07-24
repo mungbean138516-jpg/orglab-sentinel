@@ -96,14 +96,35 @@ MCP 是工具连接协议，不是 Agent，也不是数据真实性证书。中�
 
 要求 Node.js `>=22.12.0`。
 
+### PR #4 合并前预览 A 股新版
+
+Git 默认检出 `main`，因此在 PR #4 合并前必须显式切换到路演分支：
+
 ```bash
 git clone https://github.com/mungbean138516-jpg/orglab-sentinel.git
 cd orglab-sentinel
+git switch codex/a-share-roadshow-v0.3
 npm ci
 npm run dev
 ```
 
-浏览器打开 Vite 输出的本地地址。完整质量门禁：
+如果仓库已经下载过，先在正在运行的终端按 `Control + C` 停止旧版，再执行：
+
+```bash
+git fetch origin
+git switch codex/a-share-roadshow-v0.3
+git pull --ff-only
+npm ci
+npm run dev
+```
+
+确认页面左上角显示 `Sentinel · CN A`，导航中出现「目标架构」，即为 A 股新版。浏览器打开 Vite 输出的本地地址（通常是 `http://localhost:5173/`）。
+
+PR #4 合并进 `main` 后，新 clone 不再需要切换分支；GitHub Actions 会从 `main` 自动构建并部署在线演示。
+
+### 质量检查
+
+完整质量门禁：
 
 ```bash
 npm run check
