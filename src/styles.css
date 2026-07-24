@@ -2331,6 +2331,10 @@ main {
   animation: drawer-in 220ms ease both;
 }
 
+.drawer.drawer-wide {
+  width: min(1040px, 96vw);
+}
+
 .drawer > header {
   display: flex;
   min-height: 82px;
@@ -2566,6 +2570,90 @@ main {
 .notification-list,
 .holdings-detail {
   display: grid;
+  gap: 11px;
+}
+
+.evidence-overview,
+.evidence-trend-card {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.evidence-overview {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  border-color: rgba(34, 211, 216, 0.18);
+  background:
+    radial-gradient(circle at 100% 0, rgba(34, 211, 216, 0.07), transparent 42%),
+    rgba(255, 255, 255, 0.015);
+}
+
+.evidence-overview h3,
+.evidence-section-heading h3 {
+  margin: 6px 0 0;
+  color: #e1edf1;
+  font-size: 15px;
+}
+
+.evidence-overview p,
+.evidence-section-heading p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.evidence-overview-meta {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.evidence-overview-meta span,
+.evidence-section-heading > code {
+  padding: 5px 7px;
+  border: 1px solid rgba(34, 211, 216, 0.16);
+  border-radius: 7px;
+  color: var(--brand);
+  background: var(--brand-soft);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 7px;
+}
+
+.evidence-trend-card {
+  padding-bottom: 12px;
+}
+
+.evidence-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.evidence-trend-card .trend-chart-wrap {
+  margin-top: 6px;
+  grid-template-columns: minmax(0, 1fr) 210px;
+}
+
+.evidence-trend-card .trend-chart {
+  min-height: 245px;
+}
+
+.source-heading {
+  margin: 10px 2px 0;
+}
+
+.evidence-brief-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 11px;
 }
 
@@ -2987,6 +3075,26 @@ main {
 }
 
 @media (max-width: 860px) {
+  .drawer.drawer-wide {
+    width: 96vw;
+  }
+
+  .evidence-overview {
+    flex-direction: column;
+  }
+
+  .evidence-overview-meta {
+    justify-content: flex-start;
+  }
+
+  .evidence-trend-card .trend-chart-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .evidence-brief-grid {
+    grid-template-columns: 1fr;
+  }
+
   :root {
     --sidebar-width: 236px;
   }

@@ -55,10 +55,10 @@ import {
 } from './components/RiskVisuals.jsx';
 
 const pageNames = {
-  dashboard: 'A 股风险情报台',
-  agents: 'Agent 与证据链',
-  architecture: '阿里目标架构',
-  lab: '组织实验室',
+  dashboard: '情报概览',
+  agents: '核验记录',
+  architecture: '数据与服务',
+  lab: '风险演练',
 };
 
 export default function App() {
@@ -120,7 +120,7 @@ export default function App() {
     setPhase(0);
     setRunId((current) => current + 1);
     setDrawer(null);
-    showToast(`已启动「${nextScenario.short}」固定 MOCK 回放`);
+    showToast(`正在更新「${nextScenario.short}」`);
   };
 
   const navigate = (next) => {
@@ -130,7 +130,7 @@ export default function App() {
 
   const markReviewed = () => {
     setReviewedRuns((current) => ({ ...current, [reviewKey]: true }));
-    showToast('已记录“用户阅读”，没有执行任何交易');
+    showToast('已标记为已读');
   };
 
   return (
@@ -147,13 +147,13 @@ export default function App() {
           <div><strong>OrgLab</strong><span>Sentinel · CN A</span></div>
         </div>
         <nav aria-label="主要导航">
-          <NavItem icon={LayoutDashboard} label="风险情报台" active={activeNav === 'dashboard'} onClick={() => navigate('dashboard')} />
-          <NavItem icon={Users} label="Agent 证据链" active={activeNav === 'agents'} onClick={() => navigate('agents')} />
-          <NavItem icon={Cloud} label="目标架构" active={activeNav === 'architecture'} onClick={() => navigate('architecture')} />
-          <NavItem icon={FlaskConical} label="组织实验" active={activeNav === 'lab'} onClick={() => navigate('lab')} />
+          <NavItem icon={LayoutDashboard} label="情报概览" active={activeNav === 'dashboard'} onClick={() => navigate('dashboard')} />
+          <NavItem icon={Users} label="核验记录" active={activeNav === 'agents'} onClick={() => navigate('agents')} />
+          <NavItem icon={Cloud} label="数据与服务" active={activeNav === 'architecture'} onClick={() => navigate('architecture')} />
+          <NavItem icon={FlaskConical} label="风险演练" active={activeNav === 'lab'} onClick={() => navigate('lab')} />
         </nav>
         <div className="sidebar-bottom">
-          <div className="runtime-status"><span className="pulse-dot" />本地确定性回放就绪</div>
+          <div className="runtime-status"><span className="pulse-dot" />系统可用</div>
           <div className="disclaimer">MOCK ACTIVE · NO TRADING</div>
         </div>
       </aside>
@@ -172,19 +172,19 @@ export default function App() {
           >
             {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <div className="crumb"><span>路演原型</span><ChevronRight size={14} aria-hidden="true" /><b>{pageNames[activeNav]}</b></div>
+          <div className="crumb"><span>OrgLab Sentinel</span><ChevronRight size={14} aria-hidden="true" /><b>{pageNames[activeNav]}</b></div>
           <div className="top-actions">
             <span className="demo-pill"><span />MOCK ACTIVE</span>
-            <button className="icon-button" type="button" aria-label="查看演示通知" onClick={() => setDrawer('notifications')}>
+            <button className="icon-button" type="button" aria-label="查看通知" onClick={() => setDrawer('notifications')}>
               <Bell size={18} />
             </button>
-            <div className="avatar" aria-label="演示用户">演</div>
+            <div className="avatar" aria-label="当前用户">用</div>
           </div>
         </header>
 
         <div className="demo-banner" role="note">
           <FlaskConical size={15} aria-hidden="true" />
-          <strong>概念验证</strong>
+          <strong>演示环境</strong>
           <span>{DEMO_NOTICE}</span>
           <code>data_mode: MOCK</code>
         </div>
@@ -215,7 +215,7 @@ export default function App() {
       </main>
 
       {drawer && (
-        <Drawer title={drawerTitle(drawer)} onClose={() => setDrawer(null)}>
+        <Drawer title={drawerTitle(drawer)} onClose={() => setDrawer(null)} wide={drawer === 'sources'}>
           {drawer === 'report' && <RiskReport scenario={runScenarioView} reviewed={runReviewed} onReview={markReviewed} />}
           {drawer === 'ledger' && <LedgerView ledger={ledger} />}
           {drawer === 'sources' && <EvidenceView scenario={runScenarioView} />}
@@ -248,12 +248,12 @@ function useIsMobile() {
 
 function drawerTitle(type) {
   return {
-    report: '证据与完整风险报告',
-    ledger: 'Patch 决策账本',
-    sources: '专项简报与引用链',
-    rules: 'Agent 交接合同与安全边界',
-    notifications: '演示通知',
-    holdings: '模拟关注组合',
+    report: '风险报告',
+    ledger: '变更记录',
+    sources: '来源详情',
+    rules: '核验规则',
+    notifications: '通知',
+    holdings: '关注组合',
   }[type];
 }
 
@@ -282,23 +282,23 @@ function Dashboard({ scenario, phase, runtimeAgents, ledger, reviewed, runScenar
     <div className="page dashboard-page" aria-busy={phase < 5}>
       <section className="page-heading">
         <div>
-          <span className="eyebrow">A-SHARE EVIDENCE RISK INTELLIGENCE</span>
-          <h1>先核验信息，再解释风险</h1>
-          <p>A 股是首个演示场景；核心能力是多来源分工、交叉核验、冲突保留与人工门禁。</p>
+          <span className="eyebrow">今日风险概览</span>
+          <h1>{quarantined ? '发现未证实信息，已隔离' : `${scenario.severity}：${scenario.short}`}</h1>
+          <p>{reportReady ? scenario.recommendation : '正在更新核验结果…'}</p>
         </div>
         <ScenarioMenu current={scenario.id} onSelect={(next) => runScenario(next)} />
       </section>
 
       <section className="metrics-grid" aria-label="演示运行摘要">
-        <Metric icon={FileCheck2} label="已核验证据" value={phase < 2 ? '采集中' : `${verifiedEvidence} 条`} sub="带证据 ID 与来源等级" type="source" />
-        <Metric icon={AlertTriangle} label="未解决冲突" value={phase < 3 ? '等待主管' : `${scenario.synthesis.conflicts.length} 项`} sub="冲突不会被平均或隐藏" type={scenario.synthesis.conflicts.length ? 'warning' : 'success'} />
-        <Metric icon={Gauge} label="证据缺口" value={phase < 3 ? '待计算' : `${scenario.synthesis.missing.length} 项`} sub="未知项显式进入报告" type="neutral" />
-        <Metric icon={UserCheck} label="人工门禁" value={!reportReady ? '等待报告' : reviewed ? '已阅读' : '必须确认'} sub="阅读记录 ≠ 交易执行" type="success" />
+        <Metric icon={FileCheck2} label="已核验证据" value={phase < 2 ? '采集中' : `${verifiedEvidence} 条`} type="source" />
+        <Metric icon={AlertTriangle} label="待解冲突" value={phase < 3 ? '待汇总' : `${scenario.synthesis.conflicts.length} 项`} type={scenario.synthesis.conflicts.length ? 'warning' : 'success'} />
+        <Metric icon={Gauge} label="信息缺口" value={phase < 3 ? '待汇总' : `${scenario.synthesis.missing.length} 项`} type="neutral" />
+        <Metric icon={UserCheck} label="阅读确认" value={!reportReady ? '等待报告' : reviewed ? '已阅读' : '待确认'} type="success" />
       </section>
 
       <section className="work-grid">
         <div className="panel holdings-panel">
-          <PanelTitle title="模拟关注组合" subtitle="虚构证券 · 权重仅表示核验优先级" action="查看说明" onAction={() => openDrawer('holdings')} />
+          <PanelTitle title="模拟关注组合" subtitle="虚构证券 · 权重表示核验顺序" action="说明" onAction={() => openDrawer('holdings')} />
           <AllocationDonut holdings={holdings} />
           <div className="holding-list compact">
             {holdings.map((holding) => (
@@ -318,33 +318,28 @@ function Dashboard({ scenario, phase, runtimeAgents, ledger, reviewed, runScenar
               {!reportReady ? <RefreshCw className="spin" size={15} /> : quarantined ? <LockKeyhole size={15} /> : <AlertTriangle size={15} />}
               {!reportReady ? '分析进行中' : quarantined ? '信息已隔离' : scenario.severity}
             </span>
-            <span>固定演示时点 · {scenario.ticker}</span>
+            <span>{scenario.ticker} · 最新核验结果</span>
           </div>
           <h2>{scenario.title}</h2>
           <div className="source-row">
-            <span className="source-chip">MOCK FIXTURE</span>
+            <span className="source-chip">演示数据</span>
             {currentFault && <span className="fault-chip">FAULT · {currentFault.label}</span>}
-            <span>规则覆盖 {reportReady ? `${scenario.confidence}%` : '待计算'}</span>
-            <span>当前 A 级证据 {officialEvidence} 条</span>
+            <span>核验覆盖 {reportReady ? `${scenario.confidence}%` : '计算中'}</span>
+            <span>官方证据 {officialEvidence} 条</span>
           </div>
           <div className="conclusion-box">
-            <div className="suggestion-label">{!reportReady ? '等待证据合同' : '面向用户的解释'}</div>
-            <p>{reportReady ? scenario.recommendation : '两份 EvidenceBrief 提交后，主管才会输出一致点、冲突与未知项；风险 Agent 不生成买卖建议。'}</p>
-            <div className="non-advice"><ShieldCheck size={16} /><span>当前系统只解释信息风险，不预测收益，不给目标价或仓位。</span></div>
+            <div className="suggestion-label">{!reportReady ? '等待核验' : '核验结论'}</div>
+            <p>{reportReady ? scenario.rationale : '正在更新，请稍候。'}</p>
+            <div className="non-advice"><ShieldCheck size={16} /><span>仅解释信息风险，不预测收益或提供交易建议。</span></div>
           </div>
           {reportReady && <EvidenceBalance scenario={scenario} />}
           <div className="alert-actions">
             <button className="primary-action" type="button" disabled={phase < 5} onClick={() => openDrawer('report')}>
-              {phase < 5 ? <><RefreshCw className="spin" size={16} />生成中</> : <><Eye size={16} />查看证据与完整报告</>}
+              {phase < 5 ? <><RefreshCw className="spin" size={16} />生成中</> : <><Eye size={16} />查看完整报告</>}
             </button>
-            <button className="secondary-action" type="button" onClick={() => showToast('已加入本地演示提醒；刷新后不会保留')}>模拟稍后提醒</button>
+            <button className="secondary-action" type="button" onClick={() => showToast('已添加演示提醒；刷新后清除')}>稍后提醒</button>
           </div>
         </div>
-      </section>
-
-      <section className="panel trend-panel">
-        <PanelTitle title={`${scenario.trend.metric}与演示阈值`} subtitle={scenario.trend.note} action="查看核验规则" onAction={() => openDrawer('rules')} />
-        <ThresholdTrendChart trend={scenario.trend} />
       </section>
 
       <section className="source-grid" aria-label="专项 Agent 简报">
@@ -353,7 +348,7 @@ function Dashboard({ scenario, phase, runtimeAgents, ledger, reviewed, runScenar
       </section>
 
       <section className="panel workflow-panel">
-        <PanelTitle title="并行取证与证据交接" subtitle="当前为浏览器本地状态机的逻辑并行；目标由百炼编排多个通义角色" action="完整账本" onAction={() => openDrawer('ledger')} />
+        <PanelTitle title="本次核验记录" subtitle="舆情、公告和结论均可追溯" action="全部记录" onAction={() => openDrawer('ledger')} />
         <PipelineFlow agents={runtimeAgents} phase={phase} reviewed={reviewed} />
         <PatchPreview patch={ledger.at(-1)} phase={phase} />
       </section>
@@ -364,7 +359,7 @@ function Dashboard({ scenario, phase, runtimeAgents, ledger, reviewed, runScenar
 function ScenarioMenu({ current, onSelect }) {
   return (
     <div className="scenario-menu">
-      <span>选择固定 A 股事件</span>
+      <span>选择演示事件</span>
       <div>
         {scenarios.map((scenario) => (
           <button
@@ -386,7 +381,7 @@ function Metric({ icon: Icon, label, value, sub, type }) {
   return (
     <article className={`metric-card metric-${type}`}>
       <div className="metric-icon"><Icon size={18} aria-hidden="true" /></div>
-      <div><span>{label}</span><strong>{value}</strong><small>{sub}</small></div>
+      <div><span>{label}</span><strong>{value}</strong>{sub && <small>{sub}</small>}</div>
     </article>
   );
 }
@@ -410,13 +405,13 @@ function EvidenceBriefCard({ type, brief, phase, onOpen }) {
     <article className={`panel source-brief ${isNews ? 'news-brief' : 'data-brief'}`}>
       <div className="source-brief-heading">
         <div className="source-icon"><Icon size={19} /></div>
-        <div><span>{isNews ? 'PUBLIC TREND SPECIALIST' : 'OFFICIAL DISCLOSURE SPECIALIST'}</span><h3>{isNews ? '中文舆情 Agent 简报' : '公告数据 Agent 简报'}</h3></div>
+        <div><span>{isNews ? '舆情来源' : '官方来源'}</span><h3>{isNews ? '舆情核验' : '公告核验'}</h3></div>
         <span className={`brief-status ${ready ? 'ready' : ''} ${degraded ? 'degraded' : ''}`}>{statusLabel}</span>
       </div>
-      <h4>{ready ? brief.headline : phase === 1 ? '正在处理对应来源…' : '尚未开始专项处理'}</h4>
-      <p>{ready ? brief.summary : '只有通过 EvidenceBrief v1.1 校验的结构化 Patch 才会进入主管上下文。'}</p>
-      <div className="brief-meta"><span>data: {brief.dataMode}</span><span>evidence: {ready ? brief.evidence.length : '—'}</span><span>规则覆盖: {ready ? `${brief.confidence}%` : '—'}</span></div>
-      <button type="button" className="text-action" disabled={!ready} onClick={onOpen}>{ready ? '查看字段与证据' : '等待简报提交'} <ChevronRight size={14} /></button>
+      <h4>{ready ? brief.headline : phase === 1 ? '正在核验…' : '等待开始'}</h4>
+      <p>{ready ? brief.summary : '简报通过格式校验后，才会进入汇总。'}</p>
+      <div className="brief-meta"><span>数据：{brief.dataMode}</span><span>证据：{ready ? brief.evidence.length : '—'}</span><span>覆盖：{ready ? `${brief.confidence}%` : '—'}</span></div>
+      <button type="button" className="text-action" disabled={!ready} onClick={onOpen}>{ready ? '查看证据' : '等待提交'} <ChevronRight size={14} /></button>
     </article>
   );
 }
@@ -480,21 +475,21 @@ function AgentsPage({ runtimeAgents, openDrawer }) {
   return (
     <div className="page">
       <section className="page-heading">
-        <div><span className="eyebrow">ROLE SEPARATION & EVIDENCE CONTRACTS</span><h1>Agent 是岗位，不是四个平台</h1><p>当前四个 Agent 是同一浏览器原型中的逻辑角色；目标是在百炼里编排多个通义角色实例。</p></div>
-        <button className="outline-button" type="button" onClick={() => openDrawer('rules')}><LockKeyhole size={17} />查看交接规则</button>
+        <div><span className="eyebrow">核验记录</span><h1>本次核验已完成</h1><p>4 个环节均已留痕，可查看状态、依据和输出。</p></div>
+        <button className="outline-button" type="button" onClick={() => openDrawer('rules')}><LockKeyhole size={17} />核验规则</button>
       </section>
 
       <section className="runtime-truth panel">
         <div className="truth-card current">
-          <span>当前 · IMPLEMENTED / MOCK</span>
-          <h3><Server size={19} />浏览器本地确定性状态机</h3>
-          <p>固定 fixture 驱动逻辑并行、合同校验、Patch 账本和安全降级；没有真实 LLM 或外部 MCP 调用。</p>
+          <span>当前环境</span>
+          <h3><Server size={19} />演示数据已就绪</h3>
+          <p>所有核验结果均来自固定数据，可重复查看。</p>
         </div>
         <ChevronRight className="truth-arrow" size={22} />
         <div className="truth-card target">
-          <span>目标 · PLANNED</span>
-          <h3><Cloud size={19} />百炼编排多个通义角色</h3>
-          <p>百炼负责分支、超时和追踪，MCP 负责只读工具连接，钉钉承接人工复核。</p>
+          <span>外部服务</span>
+          <h3><Cloud size={19} />暂未连接</h3>
+          <p>真实模型、数据源和协作工具当前均未启用。</p>
         </div>
       </section>
 
@@ -520,12 +515,12 @@ function AgentsPage({ runtimeAgents, openDrawer }) {
               <div className="agent-card-heading"><span>L{index + 1} · {agent.stage}</span><h3>{agent.name}</h3><p>{agent.role}</p></div>
               <dl>
                 <div><dt>本次状态</dt><dd className={`agent-status status-${statusTone}`}><span />{agent.status}</dd></div>
-                <div><dt>固定规则覆盖</dt><dd>{agent.reliability}%</dd></div>
-                <div><dt>回放次数</dt><dd>{agent.demoRuns}</dd></div>
-                <div><dt>输出合同</dt><dd>{agent.output}</dd></div>
+                <div><dt>核验覆盖</dt><dd>{agent.reliability}%</dd></div>
+                <div><dt>处理记录</dt><dd>{agent.demoRuns}</dd></div>
+                <div><dt>输出格式</dt><dd>{agent.output}</dd></div>
               </dl>
               <div className="tool-state"><Workflow size={14} /><span>{agent.tool}</span></div>
-              <div className="permission"><LockKeyhole size={14} /><span>可写 namespace</span>{agent.permission.map((entry) => <code key={entry}>{entry}</code>)}</div>
+              <div className="permission"><LockKeyhole size={14} /><span>可更新范围</span>{agent.permission.map((entry) => <code key={entry}>{entry}</code>)}</div>
               <div className="cannot"><AlertTriangle size={14} /><span>{agent.cannot}</span></div>
             </article>
           );
@@ -533,8 +528,8 @@ function AgentsPage({ runtimeAgents, openDrawer }) {
       </section>
 
       <section className="panel constitution-panel">
-        <div><Sparkles size={21} /><div><h3>组织宪法 v1.1</h3><p>来源分权 · 合同先于结论 · 冲突不平均 · 热搜只作线索 · 最终报告必须人工阅读</p></div></div>
-        <button type="button" onClick={() => openDrawer('rules')}>查看全部规则</button>
+        <div><Sparkles size={21} /><div><h3>核验原则</h3><p>官方信息优先 · 冲突原样保留 · 热搜只作线索 · 结果由用户确认</p></div></div>
+        <button type="button" onClick={() => openDrawer('rules')}>全部规则</button>
       </section>
     </div>
   );
@@ -553,8 +548,7 @@ function ArchitecturePage() {
   return (
     <div className="page architecture-page">
       <section className="page-heading">
-        <div><span className="eyebrow">CURRENT PROTOTYPE → ALIBABA TARGET STACK</span><h1>阿里生态不是堆产品名，而是各管一层</h1><p>千问负责分析，百炼负责组织，魔搭负责工具与评测，MCP 负责连接，钉钉把决定交还给人。</p></div>
-        <span className="concept-pill"><Cloud size={16} />概念架构 · 未真实接入</span>
+        <div><h1>数据与服务</h1></div>
       </section>
 
       <section className="architecture-stage panel">
@@ -572,7 +566,7 @@ function ArchitecturePage() {
         </div>
         <div className="architecture-explainer">
           <ShieldCheck size={18} />
-          <p><b>关键安全边界：</b>浏览器永远不携带第三方密钥；MCP 返回内容必须先通过确定性合同、来源等级、时效与去重校验，才能进入主管上下文。</p>
+          <p><b>当前状态：</b>仅固定演示数据可用，其余服务尚未连接。</p>
         </div>
       </section>
 
@@ -589,18 +583,18 @@ function ArchitecturePage() {
       <section className="mcp-grid">
         <article className="panel mcp-card">
           <div className="mcp-heading"><Newspaper size={21} /><div><span>TOOL · PLANNED</span><h3>中文趋势聚合 MCP</h3></div></div>
-          <p>负责发现微博、知乎、Bilibili 等公开趋势线索。社区工具不等于平台官方接口，也不能证明内容真实。</p>
+          <p>发现公开讨论线索。热度只能触发核验，不能证明事实。</p>
           <ul><li>进入：中文舆情 Agent</li><li>信任等级：D 级线索</li><li>强制：同源去重、链接与时间戳</li></ul>
         </article>
         <article className="panel mcp-card">
           <div className="mcp-heading"><Database size={21} /><div><span>TOOL · AUTH REQUIRED</span><h3>天眼查 MCP</h3></div></div>
-          <p>目标用于企业主体、股权与经营司法事实核验；不能替代交易所公告，也不是股价或行情数据源。</p>
+          <p>核验企业主体、股权和司法信息，不能替代交易所公告。</p>
           <ul><li>进入：公告数据 Agent</li><li>信任等级：B 级企业事实</li><li>强制：服务端密钥、授权与调用留痕</li></ul>
         </article>
       </section>
 
       <section className="panel trust-panel">
-        <PanelTitle title="A 股来源信任梯度" subtitle="热搜负责发现，企业数据负责背景，官方公告负责确认" />
+        <PanelTitle title="来源可信度" subtitle="以官方披露为准，公共讨论仅作线索" />
         <div className="trust-ladder">
           {sourceTrustLevels.map((level) => (
             <article className={`trust-level trust-${level.tone}`} key={level.grade}>
@@ -612,7 +606,7 @@ function ArchitecturePage() {
 
       <section className="platform-vision panel">
         <div><Sparkles size={22} /></div>
-        <section><span>从一个 A 股风控壳子，复用成一套证据引擎</span><h3>同一套“发现—核验—冲突—人工门禁”可扩展到商家供应链、旅行异常与企业合作方复核</h3><p>淘宝 / 天猫、飞猪和钉钉是未来可复用的业务入口，不是本版已经接入的组件。</p></section>
+        <section><span>后续支持范围</span><h3>供应链、旅行异常和合作方核验</h3><p>相关入口尚未开放。</p></section>
         <code>ROADMAP · TARGET HYPOTHESIS</code>
       </section>
     </div>
@@ -660,9 +654,9 @@ function LabPage({ scenario, fault, runScenario }) {
   return (
     <div className="page">
       <section className="page-heading">
-        <div><span className="eyebrow">ORGANIZATION WIND TUNNEL</span><h1>同一证据，不同组织</h1><p>固定事件、fixture、预算与规则，只改变协作结构和故障；结果是演示回放，不是统计结论。</p></div>
+        <div><span className="eyebrow">风险演练</span><h1>选择场景并查看结果</h1><p>可测试超时、过期、重复来源和证据冲突。</p></div>
         <button className="primary-action" type="button" disabled={running} onClick={startExperiment}>
-          {running ? <><RefreshCw className="spin" size={16} />实验运行中</> : <><Play size={16} />运行固定对照</>}
+          {running ? <><RefreshCw className="spin" size={16} />运行中</> : <><Play size={16} />开始演练</>}
         </button>
       </section>
 
@@ -674,7 +668,7 @@ function LabPage({ scenario, fault, runScenario }) {
       </section>
 
       <div className="result-caption">
-        <span>上次完成回放</span>
+        <span>最近一次结果</span>
         <b>{resultScenario.short} · {resultFault.label}</b>
         <code>n=1 deterministic replay</code>
       </div>
@@ -685,11 +679,11 @@ function LabPage({ scenario, fault, runScenario }) {
 
       <section className="panel findings">
         <div className="finding-icon"><BarChart3 size={21} /></div>
-        <div><span>固定公式下的演示结论</span><h3>{winner.name}在本次回放中综合表现最高</h3><p>{conclusionFor(winner.id, resultConfig.faultId)} 需要多 seed、多次重复和置信区间后，才可形成研究结论。</p></div>
+        <div><span>本次结果</span><h3>{winner.name}综合表现最高</h3><p>{conclusionFor(winner.id, resultConfig.faultId)}</p></div>
         <div className="sample-badge"><b>n = 1</b><span>不代表统计显著</span></div>
       </section>
 
-      <p className="formula-note">演示综合分 = 官方覆盖 24% + 冲突保留 24% + 未知暴露 20% + 恢复能力 16% + 延迟 6% + 成本 4% + 去重 6%。该公式是产品演示规则，不是金融预测。</p>
+      <p className="formula-note">综合分用于比较本次演练表现，不代表真实业务效果或金融预测。</p>
     </div>
   );
 }
@@ -721,13 +715,13 @@ function OrgCard({ result }) {
   );
 }
 
-function Drawer({ title, onClose, children }) {
+function Drawer({ title, onClose, children, wide = false }) {
   const closeRef = useRef(null);
   useEffect(() => closeRef.current?.focus(), []);
   return (
     <div className="drawer-layer" role="presentation">
       <button className="drawer-backdrop" type="button" aria-label="关闭详情" onClick={onClose} />
-      <section className="drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+      <section className={`drawer ${wide ? 'drawer-wide' : ''}`} role="dialog" aria-modal="true" aria-labelledby="drawer-title">
         <header><div><span className="eyebrow">ORGLAB SENTINEL · CN A</span><h2 id="drawer-title">{title}</h2></div><button ref={closeRef} type="button" aria-label="关闭" onClick={onClose}><X size={20} /></button></header>
         <div className="drawer-body">{children}</div>
       </section>
@@ -742,17 +736,17 @@ function RiskReport({ scenario, reviewed, onReview }) {
   return (
     <div className="report-view">
       <div className="report-status"><ShieldCheck size={20} /><div><span>USER RISK REPORT · MOCK</span><h3>{scenario.userReport.status}</h3></div><code>{scenario.userReport.action}</code></div>
-      <section><span className="section-kicker">事件</span><h3>{scenario.title}</h3><p>{scenario.rationale}</p></section>
+      <section><span className="section-kicker">结论</span><h3>{scenario.title}</h3><p>{scenario.rationale}</p></section>
       <div className="report-grid"><section><span className="section-kicker">A 级模拟证据</span><b>{officialEvidence.length} 条</b></section><section><span className="section-kicker">未解决冲突</span><b>{scenario.synthesis.conflicts.length} 项</b></section><section><span className="section-kicker">未知项</span><b>{scenario.synthesis.missing.length} 项</b></section></div>
       <div className="fact-inference-grid">
         <section className="fact-block"><span><Check size={14} />已确认事实</span><p>{scenario.synthesis.agreement}</p></section>
         <section className="inference-block"><span><AlertTriangle size={14} />冲突 / 推断</span>{scenario.synthesis.conflicts.map((item) => <p key={item}>{item}</p>)}</section>
         <section className="unknown-block"><span><Gauge size={14} />仍未知</span><ul>{scenario.synthesis.missing.map((item) => <li key={item}>{item}</li>)}</ul></section>
       </div>
-      <section><span className="section-kicker">模拟暴露说明</span><p>{scenario.userReport.exposureSummary}</p></section>
-      <section><span className="section-kicker">用户核验清单</span><ol className="checklist">{scenario.userReport.checklist.map((item) => <li key={item}><span><Check size={13} /></span>{item}</li>)}</ol></section>
+      <section><span className="section-kicker">关注范围</span><p>{scenario.userReport.exposureSummary}</p></section>
+      <section><span className="section-kicker">下一步</span><ol className="checklist">{scenario.userReport.checklist.map((item) => <li key={item}><span><Check size={13} /></span>{item}</li>)}</ol></section>
       <section><span className="section-kicker">引用链</span><div className="citation-list">{Object.values(scenario.evidenceBriefs).flatMap((brief) => brief.evidence).map((item) => <code key={item.id}>{item.id}</code>)}</div></section>
-      <div className="legal-note"><FileWarning size={18} /><p><b>仅为概念验证，落地需相应资质与合规评估。</b> 本系统不构成投资建议，不连接券商，不自动执行交易。所有证券、事件、图表和数字均为固定 MOCK。</p></div>
+      <div className="legal-note"><FileWarning size={18} /><p><b>仅为概念验证。</b> 所有内容均为固定 MOCK，不构成投资建议，不连接券商或执行交易；实际使用前需完成资质与合规评估。</p></div>
       <button className="primary-action wide" type="button" disabled={reviewed} onClick={onReview}>{reviewed ? <><Check size={16} />已记录用户阅读</> : <><UserCheck size={16} />我已阅读风险提示（不触发交易）</>}</button>
     </div>
   );
@@ -761,7 +755,7 @@ function RiskReport({ scenario, reviewed, onReview }) {
 function LedgerView({ ledger }) {
   return (
     <div className="ledger-list">
-      <p className="drawer-intro">每个 Agent 只能提交自己 namespace 内的 Patch；下游通过 ID 引用上游证据，无法静默覆盖。当前账本是浏览器演示状态，不是区块链或不可篡改日志。</p>
+      <p className="drawer-intro">每个 Agent 只能写入自己的字段，所有修改都引用上游证据。本账本仅用于演示，不是区块链。</p>
       {ledger.map((patch, index) => (
         <article key={patch.id}>
           <div className="ledger-index">{String(index + 1).padStart(2, '0')}</div>
@@ -776,24 +770,53 @@ function LedgerView({ ledger }) {
 function EvidenceView({ scenario }) {
   return (
     <div className="evidence-view">
-      <p className="drawer-intro">两个来源 Agent 使用同一最小输出合同，但不共享结论；主管收到两份 Brief 或显式降级状态后才开始综合。</p>
-      {Object.entries(scenario.evidenceBriefs).map(([type, brief]) => (
-        <section className="evidence-brief" key={brief.id}>
-          <div className="evidence-brief-title">{type === 'news' ? <Newspaper size={18} /> : <Database size={18} />}<div><span>{brief.id}</span><h3>{brief.headline}</h3></div><b>{brief.status}</b></div>
-          <p>{brief.summary}</p>
-          <div className="schema-row">
-            <code>schema_version: {brief.schemaVersion}</code>
-            <code>data_mode: {brief.dataMode}</code>
-            <code>provider: {brief.provider}</code>
-            <code>source_class: {brief.sourceClass}</code>
-            <code>as_of: {brief.asOf}</code>
-            <code>rule_coverage: {brief.confidence}%</code>
+      <section className="evidence-overview">
+        <div>
+          <span className="section-kicker">核验结论</span>
+          <h3>{scenario.title}</h3>
+          <p>{scenario.rationale}</p>
+        </div>
+        <div className="evidence-overview-meta">
+          <span>{scenario.severity}</span>
+          <span>{scenario.ticker}</span>
+          <span>核验覆盖 {scenario.confidence}%</span>
+        </div>
+      </section>
+
+      <section className="evidence-trend-card">
+        <div className="evidence-section-heading">
+          <div>
+            <span className="section-kicker">变化趋势</span>
+            <h3>{scenario.trend.metric}</h3>
+            <p>{scenario.trend.note}</p>
           </div>
-          <h4>结构化 findings</h4><ul>{brief.findings.map((finding) => <li key={finding}>{finding}</li>)}</ul>
-          <h4>证据</h4><div className="evidence-items">{brief.evidence.map((item) => <div key={item.id}><span className={item.verified ? 'verified-dot' : 'unverified-dot'} /><div><b>{item.label}</b><small>{item.id} · {item.tier} · {item.freshness}</small><code>{item.locator}</code><p>{item.note}</p></div></div>)}</div>
-          <h4>未知与缺口</h4><ul>{brief.gaps.map((gap) => <li key={gap}>{gap}</li>)}</ul>
-        </section>
-      ))}
+          <code>阈值 {scenario.trend.threshold}{scenario.trend.unit}</code>
+        </div>
+        <ThresholdTrendChart trend={scenario.trend} />
+      </section>
+
+      <div className="evidence-section-heading source-heading">
+        <div>
+          <span className="section-kicker">来源明细</span>
+          <h3>舆情与公告证据</h3>
+        </div>
+      </div>
+      <div className="evidence-brief-grid">
+        {Object.entries(scenario.evidenceBriefs).map(([type, brief]) => (
+          <section className="evidence-brief" key={brief.id}>
+            <div className="evidence-brief-title">{type === 'news' ? <Newspaper size={18} /> : <Database size={18} />}<div><span>{brief.id}</span><h3>{brief.headline}</h3></div><b>{brief.status}</b></div>
+            <p>{brief.summary}</p>
+            <div className="schema-row">
+              <code>数据：{brief.dataMode}</code>
+              <code>来源：{brief.provider}</code>
+              <code>覆盖：{brief.confidence}%</code>
+            </div>
+            <h4>关键信息</h4><ul>{brief.findings.map((finding) => <li key={finding}>{finding}</li>)}</ul>
+            <h4>证据</h4><div className="evidence-items">{brief.evidence.map((item) => <div key={item.id}><span className={item.verified ? 'verified-dot' : 'unverified-dot'} /><div><b>{item.label}</b><small>{item.id} · {item.tier} · {item.freshness}</small><code>{item.locator}</code><p>{item.note}</p></div></div>)}</div>
+            <h4>仍需确认</h4><ul>{brief.gaps.map((gap) => <li key={gap}>{gap}</li>)}</ul>
+          </section>
+        ))}
+      </div>
     </div>
   );
 }
@@ -812,9 +835,9 @@ function RulesView() {
 }
 
 function NotificationsView({ scenario, phase }) {
-  return <div className="notification-list"><article><AlertTriangle size={18} /><div><span>演示风险报告</span><h3>{scenario.short}</h3><p>{phase >= 5 ? '固定回放已生成证据报告，需要用户人工阅读。' : '专项 Agent 正在处理，最终报告尚未生成。'}</p></div></article><article><FlaskConical size={18} /><div><span>数据与连接状态</span><h3>固定 MOCK · 外部能力未连接</h3><p>当前页面未真实调用交易所、天眼查、趋势 MCP、百炼、千问或钉钉。</p></div></article></div>;
+  return <div className="notification-list"><article><AlertTriangle size={18} /><div><span>演示报告</span><h3>{scenario.short}</h3><p>{phase >= 5 ? '报告已生成，等待阅读。' : '正在核验，报告尚未生成。'}</p></div></article><article><FlaskConical size={18} /><div><span>连接状态</span><h3>固定 MOCK · 未连接外部服务</h3><p>当前仅运行本地回放。</p></div></article></div>;
 }
 
 function HoldingsDetail() {
-  return <div className="holdings-detail"><p className="drawer-intro">以下证券代码与关注权重全部为虚构演示数据，不对应真实持仓。权重只用于展示信息核验优先级。</p>{holdings.map((holding) => <article key={holding.ticker}><div className="stock-icon" style={{ '--stock': holding.color }}>{holding.name.at(-1)}</div><div><h3>{holding.name}</h3><span>{holding.market} · {holding.ticker}</span></div><dl><div><dt>关注权重</dt><dd>{holding.allocation}%</dd></div><div><dt>证据状态</dt><dd>{holding.evidenceState}</dd></div><div><dt>交易能力</dt><dd>禁用</dd></div></dl></article>)}</div>;
+  return <div className="holdings-detail"><p className="drawer-intro">以下均为虚构数据。权重只表示核验顺序，不代表真实持仓。</p>{holdings.map((holding) => <article key={holding.ticker}><div className="stock-icon" style={{ '--stock': holding.color }}>{holding.name.at(-1)}</div><div><h3>{holding.name}</h3><span>{holding.market} · {holding.ticker}</span></div><dl><div><dt>关注权重</dt><dd>{holding.allocation}%</dd></div><div><dt>证据状态</dt><dd>{holding.evidenceState}</dd></div><div><dt>交易能力</dt><dd>禁用</dd></div></dl></article>)}</div>;
 }
