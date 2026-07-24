@@ -2,64 +2,95 @@
 
 # OrgLab Sentinel
 
-### Source-specialist multi-agent risk intelligence lab
+### A 股多源证据核验与风险解释原型
 
-让新闻、公告与财务数据各归其位，再由主管 Agent 保留证据、冲突与未知项，最终把风险交还给用户判断。
+舆情 Agent 与公告 Agent 分头取证，主管保留一致、冲突和未知项，风险 Agent 只负责解释；最终决定始终交还给用户。
 
 [![CI](https://github.com/mungbean138516-jpg/orglab-sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/mungbean138516-jpg/orglab-sentinel/actions/workflows/ci.yml)
 ![Node](https://img.shields.io/badge/Node-%3E%3D22.12-339933?logo=nodedotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
-![Data](https://img.shields.io/badge/data-MOCK%20only-F59E0B)
+![Data](https://img.shields.io/badge/data-fixed%20MOCK-F59E0B)
 ![Trading](https://img.shields.io/badge/trading-disabled-64748B)
+![Contracts](https://img.shields.io/badge/contracts-v1.1-22D3D8)
 
-[快速开始](#快速开始) · [三分钟演示](#三分钟-demo) · [架构与合同](#架构与合同) · [真实数据路线](#真实数据路线) · [协作开发](#协作开发)
+[在线演示](https://mungbean138516-jpg.github.io/orglab-sentinel/) · [90 秒演示脚本](docs/roadshow/07_DEMO_SCRIPT.md) · [路演资料包](docs/roadshow/README.md) · [架构说明](docs/roadshow/01_SYSTEM_ARCHITECTURE.md)
 
 </div>
 
 > [!IMPORTANT]
-> 当前版本只使用固定模拟数据，不接真实账户、不连接券商、不自动交易，也不构成投资建议。
+> **仅为概念验证，落地需相应资质与合规评估。** 当前版本只使用虚构 A 股证券与固定 MOCK 数据，不接真实账户、不连接券商、不荐股、不预测收益，也不自动执行交易。
 
-## 项目解决什么问题
+## 一句话定位
 
-多数多 Agent 演示让所有 Agent 同时讨论同一份信息，结果很难判断事实来自哪里、谁覆盖了谁、冲突为何消失。OrgLab Sentinel 把信息源责任和交接合同放在产品核心：
+OrgLab Sentinel 不是“AI 炒股软件”，而是一套可复用的**多源证据交接与风险解释引擎**。A 股只是首个验证场景：它帮助用户看清哪些是官方事实、哪些只是舆情推断、哪些仍然未知，从而减少由信息缺口和情绪共振造成的重大误判。
 
-- **新闻 Agent** 负责时效性公开报道；
-- **数据 / 公告 Agent** 独立负责 SEC 文件和结构化财务数据；
-- **主管 Agent** 只综合带引用的结构化简报，不创造新事实；
-- **风险 Agent** 把综合结果映射到虚构持仓，向用户说明风险与不确定性；
-- **用户人工门禁** 只能记录“已阅读”，永远不会下单。
+## 当前能演示什么
+
+- 三个完全虚构的 A 股固定场景：业绩预告修正、交易所问询、供应链传闻；
+- 舆情与公告两个专项 Agent 的逻辑并行；
+- `EvidenceBrief v1.1`、`SupervisorSynthesis v1.1` 与 `UserRiskReport v1.1`；
+- 证据 ID、来源等级、时效、同源去重、冲突和未知项的完整引用链；
+- 右侧完整报告抽屉与“只记录已阅读”的人工门禁；
+- 趋势阈值图、模拟关注权重图与事实／推断／未知构成；
+- 趋势源超时、公告过期、同源转载、证据冲突、合同失败等安全降级；
+- 固定输入下对比扁平群聊、主管—专家、动态风控三种组织。
+
+## 状态必须这样读
+
+| 状态 | 含义 | 本项目中的例子 |
+| --- | --- | --- |
+| `IMPLEMENTED` | 仓库中真实存在的代码能力 | JSON Schema、Patch 账本、人工门禁 |
+| `MOCK ACTIVE` | 可运行，但输入全部是固定虚构数据 | A 股事件、公告、热搜与图表 |
+| `PLANNED` | 已完成概念设计，尚未真实调用 | 百炼、通义千问、ModelScope / EvalScope |
+| `AUTH REQUIRED` | 可选外部工具，需要服务端授权 | 天眼查 MCP |
+| `ROADMAP` | 后续产品方向 | 钉钉人工复核、通义／夸克用户入口 |
+
+页面不会把 `PLANNED` 冒充成“已连接”或“实时”。
 
 ## 核心工作流
 
 ```mermaid
 flowchart LR
-    E["Event"] --> N["News Agent"]
-    E --> D["Data / Filing Agent"]
-    N --> S["Supervisor"]
-    D --> S
-    S --> R["Risk Agent"]
-    R --> H["User review gate"]
+    E["A 股事件 · MOCK"] --> N["中文舆情 Agent"]
+    E --> D["公告数据 Agent"]
+    N --> V["EvidenceBrief v1.1 校验"]
+    D --> V
+    V --> S["主管 Agent<br/>一致 / 冲突 / 未知"]
+    S --> R["风险解释 Agent"]
+    R --> H["用户人工门禁<br/>只读 · 不交易"]
 ```
 
-| 阶段 | 专项职责 | 标准输出 | 安全降级 |
-| --- | --- | --- | --- |
-| News Agent | 公司新闻、公开报道、时效线索 | `EvidenceBrief v1` | 超时会显式标记，不抹除数据简报 |
-| Data / Filing Agent | SEC 文件、XBRL 与结构化数据 | `EvidenceBrief v1` | 缺失字段进入 gaps，不补造数值 |
-| Supervisor | 一致点、冲突、未知项与证据覆盖 | `SupervisorSynthesis v1` | 冲突保留并隔离，不强行给单一结论 |
-| Risk Agent | 虚构持仓暴露与用户可读风险 | `UserRiskReport v1` | 证据不足时暂不估计影响或风险分 |
+| 岗位 | 只负责什么 | 明确不能做什么 |
+| --- | --- | --- |
+| 中文舆情 Agent | 发现新闻、热搜和公开讨论；分级、去重、隔离传闻 | 不能把热度当事实，不能形成交易建议 |
+| 公告数据 Agent | 核对交易所公告、财务字段和企业主体信息 | 不能输出目标价或仓位 |
+| 主管 Agent | 比较两份简报，保留一致、冲突和未知项 | 不能创造新事实或静默抹平冲突 |
+| 风险解释 Agent | 翻译证据状态和用户核验清单 | 不能荐股、连接券商或自动下单 |
 
-## 已实现能力
+当前这些 Agent 是**同一 React 浏览器应用里的逻辑角色**，由确定性 JavaScript 状态机驱动；并不是四个已经部署的平台或四个真实大模型。
 
-- 新闻与数据两个专项 Agent **并行**处理不同来源；
-- 版本化 JSON Schema 和 Ajv 测试约束四个核心合同；
-- evidence ID、source class、locator、as-of、gap、conflict 全链路可追踪；
-- Patch 决策账本保留从事件到用户复核的父子关系；
-- 未证实传闻会被隔离，不能转化成调仓动作；
-- 可注入新闻 Agent 超时和证据冲突，观察风险如何向下游传播；
-- 可用同一输入与固定预算比较三种 Agent 组织；
-- 三个离线可点击页面：风险监控台、Agent 团队、组织实验室；
-- 无 API key、无实时 provider 请求、无账户或交易能力。
+## 阿里目标架构
+
+```mermaid
+flowchart TD
+    U["网页 / 通义 / 夸克 / 钉钉入口<br/>ROADMAP"] --> B["百炼 Workflow<br/>PLANNED"]
+    B --> Q1["通义千问 · 舆情角色<br/>PLANNED"]
+    B --> Q2["通义千问 · 公告角色<br/>PLANNED"]
+    Q1 --> M1["中文趋势 MCP<br/>PLANNED"]
+    Q2 --> M2["天眼查 MCP<br/>AUTH REQUIRED"]
+    Q2 --> O["交易所 / 法定披露适配器<br/>PLANNED"]
+    M1 --> C["确定性证据合同<br/>IMPLEMENTED"]
+    M2 --> C
+    O --> C
+    C --> Q3["主管与风险解释角色<br/>PLANNED"]
+    Q3 --> H["人工复核门禁"]
+```
+
+最简洁的技术表达：
+
+> 千问负责分析，百炼负责组织，魔搭负责工具与评测，MCP 负责连接，钉钉把决定交还给人。
+
+MCP 是工具连接协议，不是 Agent，也不是数据真实性证书。中文趋势 MCP 只能发现线索；天眼查 MCP 用于企业事实交叉核验；最终确认仍应优先使用交易所与法定披露来源。
 
 ## 快速开始
 
@@ -72,84 +103,90 @@ npm ci
 npm run dev
 ```
 
-浏览器打开 Vite 输出的本地地址。运行完整质量门禁：
+浏览器打开 Vite 输出的本地地址。完整质量门禁：
 
 ```bash
 npm run check
 ```
 
-该命令会运行 11 项核心测试并生成生产构建。CI 在每次 push 和 pull request 时执行同样的检查。
+该命令运行合同、证据链、故障降级与组织实验测试，再生成生产构建。GitHub Actions 在 push 和 pull request 时执行同样的检查。
 
-## 三分钟 Demo
+## 90 秒现场路径
 
-1. 在「监控台」注入“财报指标承压”，观察新闻与数据 Agent 并行提交简报。
-2. 打开两份简报，展示来源分级、结构化 findings、证据 ID 和未知项。
-3. 打开 Patch 账本，说明下游只能引用上游 Patch，不能静默覆盖。
-4. 打开风险报告，强调“标记已阅读”不会执行交易。
-5. 切换到“未证实传闻”，展示匿名来源被隔离且不产生调仓动作。
-6. 在「组织实验室」注入“新闻 Agent 超时”，运行三种组织的固定对照。
+1. 在「风险情报台」选择“业绩预告修正”，点击运行固定回放。
+2. 指出两位专项 Agent 逻辑并行，并分别提交 `EvidenceBrief v1.1`。
+3. 展开趋势阈值图：越过阈值只触发核验，不预测股价。
+4. 点击“查看证据与完整报告”，展示事实、冲突、未知项和引用 ID。
+5. 点击“我已阅读风险提示”，强调它不会触发交易。
+6. 去「组织实验」注入“公告与舆情冲突”或“输出合同失败”，展示系统安全降级。
+7. 去「目标架构」，用一页解释百炼、千问、魔搭、MCP 与钉钉各自的职责。
 
-## 组织实验
+完整逐句旁白、录屏时间轴与故障备选见 [Demo 脚本](docs/roadshow/07_DEMO_SCRIPT.md)。
 
-| 维度 | 当前固定演示范围 |
-| --- | --- |
-| 虚构持仓 | NVDA、AAPL、TSLA |
-| 场景 | 财报指标承压、供应链中断、未证实传闻 |
-| 组织 | 扁平群聊、主管—专家、动态风控 |
-| 故障 | 无故障、新闻 Agent 超时、证据冲突 |
-| 预算 | 每轮上限 `$0.50` 的固定演示约束 |
-| 数据模式 | `MOCK`；本地 fixture；无实时 feed |
-
-实验结果由固定输入与固定公式确定，只用于展示 OrgLab 的测量方法。页面明确标记 `n=1 demo replay`；它不是统计显著性或真实投资表现。
-
-## 架构与合同
+## 目录
 
 ```text
 src/
-  App.jsx                 # 三个页面与交互状态
-  data/demoData.js        # 固定持仓、事件、Agent 与证据 fixtures
-  lib/simulation.js       # 管线状态、Patch 账本与组织实验计算
-  styles.css              # 响应式设计系统
+  App.jsx                     # 四个可点击页面与交互状态
+  components/RiskVisuals.jsx  # 关注权重、阈值和证据构成图
+  data/demoData.js            # A 股虚构 fixture、Agent 与连接状态
+  lib/simulation.js           # 管线状态、故障、Patch 账本与组织实验
+  styles.css                  # 响应式设计与颜色语义
 test/
-  simulation.test.js      # 并行分工、隔离、降级、证据链与实验测试
+  simulation.test.js          # 合同、证据链、降级和实验测试
 docs/
-  ARCHITECTURE.md         # 责任边界与事件时序
-  DATA_INTEGRATION.md     # SEC / Finnhub 安全接入边界
-  contracts/              # 四个版本化 JSON Schema
+  contracts/                  # 四个 v1.1 JSON Schema
+  roadshow/                   # 架构、PPT、演示、合规与接入资料
 .github/
-  workflows/ci.yml        # test + build
+  workflows/                  # CI 与 GitHub Pages
 ```
 
-进一步阅读：[系统架构](docs/ARCHITECTURE.md) · [数据接入边界](docs/DATA_INTEGRATION.md) · [开发规范](CONTRIBUTING.md) · [安全边界](SECURITY.md)
+## 路演与 PPT 素材
 
-## 真实数据路线
+`docs/roadshow/` 已把工程真相、目标愿景和 PPT 素材分开：
 
-路演始终保留本地 fixture。下一阶段才从后端加入：
+- [系统架构：当前 Prototype vs 目标架构](docs/roadshow/01_SYSTEM_ARCHITECTURE.md)
+- [Agent 层级与权限](docs/roadshow/02_AGENT_HIERARCHY.md)
+- [端到端事件流](docs/roadshow/03_END_TO_END_EVENT_FLOW.md)
+- [合同与安全边界](docs/roadshow/04_CONTRACTS_AND_SAFETY.md)
+- [阿里技术图谱](docs/roadshow/05_ALIBABA_TECHNOLOGY_MAP.md)
+- [A 股适配层](docs/roadshow/06_A_SHARE_ADAPTER_LAYER.md)
+- [90 秒 Demo 脚本](docs/roadshow/07_DEMO_SCRIPT.md)
+- [宣传与合规矩阵](docs/roadshow/08_CLAIMS_AND_COMPLIANCE_MATRIX.md)
+- [团队反馈决策日志](docs/roadshow/09_STAKEHOLDER_FEEDBACK_DECISIONS.md)
+- [11 页 PPT 素材映射](docs/roadshow/10_PPT_SOURCE_MAP.md)
+- [连接器、依赖与密钥安全](docs/roadshow/11_CONNECTOR_SETUP_AND_SECRETS.md)
 
-1. SEC EDGAR：10-K、10-Q、8-K、Submissions 与 XBRL facts；
-2. Finnhub：只作为公司新闻的二级触发源；
-3. 所有 provider 输出映射到同一版本化合同；
-4. 任何 live 失败必须显式降级，不能用虚构信息冒充实时结果。
+## 密钥与真实接入
 
-SEC 的声明式 User-Agent、限流与缓存，以及 Finnhub 的服务端密钥要求见 [数据接入边界](docs/DATA_INTEGRATION.md)。密钥禁止使用 `VITE_*` 前缀，也禁止进入浏览器代码或 Git。
+仓库只保存 `.env.example` 占位符，绝不保存真实：
 
-## 协作开发
+- `DASHSCOPE_API_KEY`
+- `MODELSCOPE_ACCESS_TOKEN`
+- `TIANYANCHA_API_KEY`
+- ModelScope Hosted MCP Remote URL
 
-`main` 是可运行的完整基线，不要求先建立 Issue。团队成员可以直接从最新 `main` 开一个聚焦分支：
+任何真实接入都必须走：
+
+```text
+浏览器 → 自有后端 / 百炼 → MCP 或数据服务
+```
+
+密钥不能使用 `VITE_*` 暴露到前端，也不能出现在 Git、截图、录屏、日志或 PPT 中。完整规则见 [连接器与密钥](docs/roadshow/11_CONNECTOR_SETUP_AND_SECRETS.md)。
+
+## 协作
+
+`main` 保持为可运行基线。团队成员无需先拆八个 Issue；从最新 `main` 创建聚焦分支，尽早开 Draft PR：
 
 ```bash
 git switch main
 git pull --ff-only
-git switch -c frontend/improve-evidence-drawer
+git switch -c frontend/improve-report-drawer
+npm run check
 ```
 
-- 小范围修改按团队约定提交；跨模块修改尽早开 Draft PR；
-- 避免多人同时大改 `App.jsx`、`styles.css` 或共享 schema；
-- PR 附上 `npm run check` 结果，UI 变化附截图或录屏；
-- schema、风险文案、实验指标和数据适配器需要对应角色交叉审阅。
+跨模块修改时优先避免多人同时重写 `App.jsx`、`styles.css` 或共享 Schema。UI 变化附截图或录屏；合同、风险文案、实验指标与外部连接器需交叉审阅。
 
-角色边界与后续方向见 [TEAM_TASKS.md](TEAM_TASKS.md)，具体规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+## 最后边界
 
-## 当前边界
-
-这仍是可路演的前端研究原型，不是生产级金融系统。尚未实现真实 API、后台权限强制、持久化事件存储、LLM 调用、通知服务、身份系统或券商集成。页面中的金额、收益、风险分、响应时间和证据均为固定演示值。
+这是一套可路演的前端概念原型，不是生产金融系统。它尚未实现真实行情、公告或热搜接入，未真实调用百炼、千问、魔搭、天眼查 MCP、趋势 MCP 或钉钉，也没有后台权限、持久化数据库、身份系统、券商连接或交易能力。

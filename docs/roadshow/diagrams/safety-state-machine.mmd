@@ -1,0 +1,25 @@
+stateDiagram-v2
+    [*] --> QUEUED
+    QUEUED --> SPECIALISTS_RUNNING
+    SPECIALISTS_RUNNING --> BRIEFS_SUBMITTED
+    BRIEFS_SUBMITTED --> SUPERVISING
+
+    SUPERVISING --> RISK_MAPPING: 证据覆盖足够
+    RISK_MAPPING --> USER_REVIEW
+
+    SUPERVISING --> DEGRADED: 单一来源超时 / 数据过期
+    DEGRADED --> USER_REVIEW: 等待核验报告
+
+    SUPERVISING --> QUARANTINED: 证据冲突 / 未证实传闻
+    QUARANTINED --> VERIFICATION_ONLY
+    VERIFICATION_ONLY --> USER_REVIEW
+
+    USER_REVIEW --> REVIEWED: 用户标记已阅读
+    REVIEWED --> [*]
+
+    note right of USER_REVIEW
+      human_gate = REQUIRED
+      no broker
+      no automatic trade
+    end note
+

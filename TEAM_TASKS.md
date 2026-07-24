@@ -1,68 +1,59 @@
-# OrgLab Sentinel Team Tasks
+# OrgLab Sentinel team lanes
 
-This board defines lightweight ownership boundaries for the eight-person team. It is a coordination guide, not a requirement to create eight GitHub issues.
+This is a lightweight coordination guide for a mixed technical and non-technical team. It is **not** a requirement to create eight GitHub issues.
 
-## Authoritative product flow
+## Authoritative flow
 
-| Stage | Owner domain | Input | Required output |
-| --- | --- | --- | --- |
-| 1. News Agent | Agent + data engineering | News fixtures/API adapter | Structured news brief with source, freshness, facts, inference, confidence, and limitations |
-| 2. Data/Filing Agent | Agent + data engineering | SEC filings and financial-data fixtures/API adapter | Independent structured filing/data brief using the same evidence contract |
-| 3. Supervisor | Architecture + agent engineering | Both specialist briefs | Cited synthesis that preserves conflicts, missing evidence, and uncertainty |
-| 4. User Risk Report | Frontend + compliance + evaluation | Supervisor synthesis | Human-readable risk report with user-reviewed actions and no automatic trade |
+| Stage | Input | Required output |
+| --- | --- | --- |
+| Public-trend Agent | Chinese news / trend fixture or adapter | Cited, deduplicated `EvidenceBrief v1.1`; heat remains a clue |
+| Disclosure Agent | Exchange / issuer / enterprise fixture or adapter | Independent factual `EvidenceBrief v1.1` |
+| Supervisor | Both briefs or explicit degraded records | Agreement, conflict, unknowns and decision |
+| Risk explanation | Supervisor synthesis | Human-readable report, verification checklist and no trade |
 
-Stages 1 and 2 own distinct sources and may execute in parallel. The Supervisor must not erase disagreement merely to create a cleaner answer.
+## Eight collaboration lanes
 
-## Eight role lanes
+| Lane | Primary ownership | Useful next contribution |
+| --- | --- | --- |
+| Product / Lead | Scope, audience, opening and closing | Freeze the 90-second demo and 8-minute story |
+| Architecture | Contracts, orchestration and trust boundaries | Review v1.1 schemas and target Bailian flow |
+| Agent design | Role prompts/rules and failure recovery | Draft Qwen role instructions without expanding permissions |
+| Data | Fictional fixtures and future adapters | Define official disclosure, trends and enterprise adapters |
+| Frontend | Dashboard, report drawer and accessibility | Refine evidence drill-down and mobile presentation |
+| Evaluation | Metrics, fixed controls and fault injection | Define repeated-seed protocol beyond the current n=1 demo |
+| Compliance / Industry | User pain, source rights and wording | Review every claim, label and external connector |
+| Deck / Visual | PPT, demo recording and timing | Turn `docs/roadshow/10_PPT_SOURCE_MAP.md` into 10–12 slides |
 
-| Role | Primary ownership | First sprint task | Acceptance signal |
-| --- | --- | --- | --- |
-| 1. Product / Team Lead | Scope, release path, opening and closing narrative | Freeze the three canonical events and end-to-end demo script | Dependencies named and three-minute demo path rehearsed |
-| 2. Architecture / Backend | Event schema, EvidenceBrief contract, orchestration, Supervisor boundary | Define the EvidenceBrief and UserRiskReport contracts | News and filing briefs can be validated independently and merged without losing provenance |
-| 3. Agent Engineering | Prompts/rules, structured output, failure recovery | Implement or document the two specialist behaviors and Supervisor reconciliation | Rumor, missing-source, and conflicting-evidence cases produce safe structured states |
-| 4. Data Engineering | Mock fixtures, SEC adapter, optional news adapter, caching/fallback | Build deterministic fixtures first; then add SEC EDGAR behind the adapter | Demo works offline and live failure falls back visibly without fabricated data |
-| 5. Frontend Engineering | Dashboard, Agent Team, OrgLab comparison, live demo | Make the four stages and evidence lineage visible in the UI | A reviewer can follow one event from sources to final report without explanation |
-| 6. Experiment Evaluation | Metrics, fault injection, topology comparison | Define equal-input comparisons for flat, supervisor-expert, and dynamic-risk modes | Results show methodology and uncertainty, not decorative or unexplained scores |
-| 7. Industry / Compliance | User pain, competitors, disclaimers, risk language | Review every action label and report disclaimer | No brokerage connection, execution claim, guaranteed outcome, or unsupported certainty |
-| 8. Deck / Visual | Story, charts, timing, backup recording | Align the 20-minute deck and offline demo | Visual language matches the product and a backup video covers the full demo path |
+## Lightweight workflow
 
-## Lightweight collaboration workflow
+1. Treat latest `main` as the complete runnable baseline.
+2. Choose a focused contribution and tell the team what shared files it touches.
+3. Use a branch for non-trivial work; an Issue is optional.
+4. Open a Draft PR early for cross-module changes.
+5. Merge after CI and the relevant cross-role review pass.
 
-1. Treat the latest `main` as the complete working baseline.
-2. Choose one primary role lane and state the intended outcome to the team; a GitHub issue is optional.
-3. Use a focused branch such as `data/sec-fixtures` or `frontend/evidence-drawer` for non-trivial work.
-4. Coordinate before editing a shared file already owned by another active change.
-5. Open a Draft PR early for cross-module changes and list the shared files it touches.
-6. Merge only after CI, acceptance criteria, and the relevant cross-role review pass.
+## Priority backlog
 
-## Follow-up backlog
+### P0 — roadshow reliability
 
-### P0 — stable collaborative baseline
+- Rehearse the fixed A-share happy path and one safe-degradation path.
+- Capture a backup recording and screenshots.
+- Keep all claims aligned with `docs/roadshow/08_CLAIMS_AND_COMPLIANCE_MATRIX.md`.
+- Ensure every slide number has a source or `目标假设` label.
 
-- Product: capture the canonical three-event demo and explicit non-trading boundary.
-- Architecture: publish one versioned Event, EvidenceBrief, SupervisorSynthesis, and UserRiskReport contract.
-- Agent: preserve independent source analysis and conflict handling across all four stages.
-- Data: provide deterministic news and filing fixtures for NVDA, AAPL, and TSLA.
-- Frontend: expose source-to-report traceability, loading, empty, quarantined, and error states.
-- Evaluation: verify the three organization modes use the same event inputs and comparison budget.
-- Compliance: review labels, caveats, uncertainty, and final user-confirmation copy.
-- Deck: record the offline happy path plus the unverified-rumor quarantine path.
+### P1 — concept architecture
 
-### P1 — real-source adapter, still mock-first
+- Define a server-side official-disclosure adapter.
+- Define read-only Tianyancha and Chinese trends MCP tool policies.
+- Map the deterministic v1.1 contracts into a Bailian workflow design.
+- Keep the local MOCK path as the roadshow default.
 
-- Add SEC EDGAR ingestion behind the Data/Filing Agent adapter.
-- Select one news provider only after documenting its rate limit, attribution, freshness, and fallback behavior.
-- Keep local fixtures as the default roadshow path.
-- Add observable source failures without breaking the final report flow.
+### P2 — evaluation
 
-### P2 — OrgLab evidence
-
-- Inject Agent timeout, unverified rumor, and conflicting-source faults.
-- Compare flat chat, supervisor-expert, and dynamic-risk organizations under identical inputs.
-- Report latency, duplicate work, conflicts, recovery time, and evidence coverage with definitions.
+- Run multiple seeds with locked prompts, models and tools.
+- Measure official coverage, conflict retention, unknown visibility, duplicate work and recovery.
+- Report uncertainty rather than only a single score.
 
 ## Definition of done
 
-A task is done when its acceptance criteria pass, tests and production build succeed, documentation reflects any contract change, mock fallback still works, and a reviewer can verify the result from the pull request alone.
-
-For user-facing work, also include screenshots or a short recording. For data or agent work, include representative structured input/output with no secrets or personal account data.
+Acceptance criteria pass, tests and production build succeed, documentation reflects contract changes, offline MOCK still works, no secret or real personal data is introduced, and a reviewer can verify the result from the PR alone.

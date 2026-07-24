@@ -1,19 +1,18 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://orglab.example/schemas/user-risk-report-v1.json",
-  "title": "OrgLab Sentinel UserRiskReport v1",
+  "$id": "https://orglab.example/schemas/user-risk-report-v1.1.json",
+  "title": "OrgLab Sentinel UserRiskReport v1.1",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "schemaVersion", "synthesisId", "humanGate", "status", "action", "targetRange", "checklist"],
+  "required": ["id", "schemaVersion", "synthesisId", "humanGate", "status", "action", "exposureSummary", "checklist"],
   "properties": {
     "id": { "type": "string", "minLength": 1 },
-    "schemaVersion": { "const": "1.0" },
+    "schemaVersion": { "const": "1.1" },
     "synthesisId": { "type": "string", "minLength": 1 },
     "humanGate": { "const": true },
     "status": { "type": "string", "minLength": 1 },
-    "action": { "enum": ["REVIEW_REBALANCE_RANGE", "NO_IMMEDIATE_REBALANCE", "NO_PORTFOLIO_ACTION"] },
-    "targetRange": { "type": "string", "minLength": 1 },
+    "action": { "enum": ["REVIEW_EVIDENCE", "WATCH_FOR_CONFIRMATION", "NO_ACTION_INSUFFICIENT_EVIDENCE"] },
+    "exposureSummary": { "type": "string", "minLength": 1 },
     "checklist": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
   }
 }
-

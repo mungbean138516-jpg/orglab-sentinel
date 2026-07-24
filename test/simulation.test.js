@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
-import { scenarios } from '../src/data/demoData.js';
+import { faults, holdings, scenarios } from '../src/data/demoData.js';
 import {
   applyFaultToScenario,
   getAgentRuntime,
@@ -44,8 +44,8 @@ test('canonical and fault-injected fixtures satisfy all JSON Schemas', () => {
 
   const eventFields = ['id', 'schemaVersion', 'dataMode', 'ticker', 'eventType', 'title', 'asOf', 'sourceRefs'];
   for (const scenario of scenarios) {
-    for (const fault of ['none', 'news-timeout', 'conflicting-evidence']) {
-      const run = applyFaultToScenario(scenario, fault, `SCHEMA-${scenario.id}-${fault}`);
+    for (const fault of faults) {
+      const run = applyFaultToScenario(scenario, fault.id, `SCHEMA-${scenario.id}-${fault.id}`);
       const event = Object.fromEntries(eventFields.map((field) => [field, run[field]]));
       assert.equal(validateEvent(event), true, JSON.stringify(validateEvent.errors));
       assert.equal(validateBrief(run.evidenceBriefs.news), true, JSON.stringify(validateBrief.errors));
@@ -71,7 +71,7 @@ test('news and filing specialists run in parallel before the supervisor', () => 
 test('an unverified rumor is quarantined and produces no portfolio action', () => {
   const rumor = scenarios.find((scenario) => scenario.id === 'rumor');
   assert.equal(isQuarantined(rumor), true);
-  assert.equal(rumor.userReport.action, 'NO_PORTFOLIO_ACTION');
+  assert.equal(rumor.userReport.action, 'NO_ACTION_INSUFFICIENT_EVIDENCE');
   assert.match(rumor.recommendation, /隔离/);
 });
 
@@ -103,14 +103,14 @@ test('news timeout degrades the news specialist without erasing the data brief',
   assert.equal(runtime.find((agent) => agent.key === 'news').status, '降级完成');
   assert.equal(runtime.find((agent) => agent.key === 'filing').status, '已提交');
   assert.equal(degradedScenario.evidenceBriefs.news.status, 'SOURCE_TIMEOUT');
-  assert.equal(degradedScenario.userReport.action, 'NO_IMMEDIATE_REBALANCE');
-  assert.match(degradedScenario.synthesis.conflicts[0], /新闻简报缺失/);
+  assert.equal(degradedScenario.userReport.action, 'WATCH_FOR_CONFIRMATION');
+  assert.match(degradedScenario.synthesis.conflicts[0], /舆情简报缺失/);
 });
 
 test('conflicting evidence is preserved and quarantined through the user report', () => {
   const conflictedScenario = applyFaultToScenario(scenarios[0], 'conflicting-evidence');
   assert.equal(conflictedScenario.synthesis.decision, 'QUARANTINE_SOURCE');
-  assert.equal(conflictedScenario.userReport.action, 'NO_PORTFOLIO_ACTION');
+  assert.equal(conflictedScenario.userReport.action, 'NO_ACTION_INSUFFICIENT_EVIDENCE');
   assert.equal(conflictedScenario.userReport.humanGate, true);
   assert.match(conflictedScenario.recommendation, /冲突/);
 });
@@ -127,4 +127,55 @@ test('dynamic risk organization recovers best from a source timeout', () => {
   const dynamic = results.find((result) => result.id === 'dynamic');
   const alternatives = results.filter((result) => result.id !== 'dynamic');
   assert.ok(alternatives.every((result) => dynamic.recovery > result.recovery));
+});
+
+test('A-share demo identifiers are fictional, schema-compatible, and weights total 100', () => {
+  assert.equal(holdings.reduce((sum, holding) => sum + holding.allocation, 0), 100);
+  for (const holding of holdings) {
+    assert.match(holding.ticker, /^[0-9X]{6}\.(SH|SZ|BJ)$/);
+    assert.match(holding.ticker, /X/);
+    assert.match(holding.market, /虚构样本/);
+  }
+});
+
+test('every report action is non-execution and no target range survives in v1.1', () => {
+  const safeActions = new Set([
+    'REVIEW_EVIDENCE',
+    'WATCH_FOR_CONFIRMATION',
+    'NO_ACTION_INSUFFICIENT_EVIDENCE',
+  ]);
+  for (const scenario of scenarios) {
+    for (const fault of faults) {
+      const run = applyFaultToScenario(scenario, fault.id, `SAFE-${fault.id}`);
+      assert.equal(safeActions.has(run.userReport.action), true);
+      assert.equal(run.userReport.humanGate, true);
+      assert.equal('targetRange' in run.userReport, false);
+      assert.match(run.userReport.exposureSummary, /不|仅/);
+    }
+  }
+});
+
+test('stale disclosure data is isolated instead of treated as current evidence', () => {
+  const run = applyFaultToScenario(scenarios[0], 'stale-data', 301);
+  const runtime = getAgentRuntime(2, run, 'stale-data');
+  assert.equal(run.evidenceBriefs.filing.status, 'STALE_SOURCE_FIXTURE');
+  assert.equal(runtime.find((agent) => agent.key === 'filing').status, '过期隔离');
+  assert.equal(run.userReport.action, 'WATCH_FOR_CONFIRMATION');
+  assert.match(run.synthesis.missing[0], /最新官方披露/);
+});
+
+test('duplicate-source fault collapses repeated posts into one evidence cluster', () => {
+  const run = applyFaultToScenario(scenarios[1], 'duplicate-source', 302);
+  assert.equal(run.evidenceBriefs.news.status, 'DUPLICATE_CLUSTER_COLLAPSED');
+  assert.match(run.evidenceBriefs.news.findings.join(' '), /独立来源：1/);
+  assert.match(run.recommendation, /同源转载/);
+});
+
+test('contract failure rejects the source Patch and still produces a safe report', () => {
+  const run = applyFaultToScenario(scenarios[0], 'contract-failure', 303);
+  const ledger = getPatchLedger(run, 5, 'contract-failure');
+  assert.equal(run.evidenceBriefs.news.status, 'CONTRACT_REJECTED');
+  assert.equal(ledger[0].status, 'REJECTED');
+  assert.equal(run.userReport.action, 'WATCH_FOR_CONFIRMATION');
+  assert.match(run.rationale, /安全边界/);
 });

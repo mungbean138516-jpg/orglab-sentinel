@@ -1,0 +1,27 @@
+flowchart TB
+    L1["一级证据<br/>交易所 / 公司正式公告"]
+    L2["二级证据<br/>授权新闻 / 结构化企业公开信息"]
+    L3["辅助核验<br/>企业主体与关系信息"]
+    L4["事件触发<br/>热搜 / 论坛 / 公开讨论"]
+    Q["默认隔离<br/>匿名传闻 / 无法定位来源"]
+
+    L1 -->|"可支持事实"| B["EvidenceBrief"]
+    L2 -->|"需保留发布方、时间与链接"| B
+    L3 -->|"只支持对应字段"| B
+    L4 -->|"不能直接证明事实"| V["等待一级来源核验"]
+    Q --> V
+    V -->|"找到一级来源"| B
+    V -->|"仍未证实"| X["QUARANTINE_SOURCE"]
+
+    classDef primary fill:#14532d,color:#ffffff,stroke:#86efac,stroke-width:2px;
+    classDef secondary fill:#1e3a8a,color:#ffffff,stroke:#93c5fd;
+    classDef trigger fill:#78350f,color:#ffffff,stroke:#fcd34d;
+    classDef quarantine fill:#7f1d1d,color:#ffffff,stroke:#fca5a5,stroke-width:2px;
+    classDef output fill:#164e63,color:#ffffff,stroke:#67e8f9;
+
+    class L1 primary;
+    class L2,L3 secondary;
+    class L4,V trigger;
+    class Q,X quarantine;
+    class B output;
+

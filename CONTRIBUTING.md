@@ -1,47 +1,50 @@
 # Contributing to OrgLab Sentinel
 
-OrgLab Sentinel is a mock-first, multi-agent risk-monitoring prototype for individual U.S. equity investors. It explains evidence and risk; it does not place trades or replace the user's judgment.
+OrgLab Sentinel is a MOCK-first A-share evidence-verification and risk-explanation prototype. It does not recommend or execute trades.
 
 ## Product source of truth
 
-All product work must preserve the current four-stage, source-specialist pipeline:
+Preserve the four-role pipeline:
 
-1. **News Agent** — handles company news and other time-sensitive public reporting.
-2. **Data/Filing Agent** — independently handles SEC filings and structured financial data.
-3. **Supervisor** — receives both structured briefs, reconciles conflicts, preserves source attribution, and produces a synthesis.
-4. **User Risk Report** — presents the synthesis, uncertainty, evidence, and possible user-reviewed actions. The user remains the decision-maker.
+1. **Chinese public-trend Agent** — finds public discussion, grades sources, deduplicates and quarantines rumors.
+2. **Disclosure / data Agent** — independently verifies exchange disclosures, structured facts and corporate identity.
+3. **Supervisor** — compares both briefs, preserving agreements, conflicts and unknowns.
+4. **Risk explanation Agent** — presents a cited verification report behind a human read gate.
 
-The first two stages have distinct source ownership and may run in parallel. Neither source agent should silently copy, overwrite, or impersonate the other agent's analysis.
+The first two roles own distinct sources and may run in logical parallel. The Supervisor is not a new source.
 
 ## Prototype guardrails
 
-- Keep the default demo mock-first and runnable without network access.
-- Do not connect a brokerage, place orders, or imply that an action was executed.
-- Do not turn an unverified report into a fact. Preserve source, timestamp, freshness, confidence, and limitations.
-- Do not expose API keys, account data, or other secrets in code, fixtures, screenshots, logs, or pull requests.
-- Keep recommendations evidence-backed and phrased as information for user review, such as observe, verify, or consider a position-adjustment range.
-- Keep NVDA, AAPL, and TSLA plus the three canonical demo events working unless an agreed change explicitly updates the demo scope.
-- Treat the Supervisor as a synthesizer, not a new source. It must retain disagreements and citations from both specialist briefs.
+- Keep the default demo deterministic, offline and network-independent.
+- Use fictional instruments such as `600XXX.SH`; do not attach a fabricated negative event to a real company.
+- Do not output buy/sell, target price, return prediction, target position or claim an action was executed.
+- Preserve source class, time, freshness, evidence ID, verification state and limitations.
+- Explicitly label `IMPLEMENTED`, `MOCK ACTIVE`, `PLANNED`, `AUTH REQUIRED` and `ROADMAP`.
+- Do not expose API keys, Hosted MCP URLs, account data or secrets in code, fixtures, screenshots, logs or pull requests.
+- Treat MCP as a tool connector, not an Agent or accuracy certificate.
 
-## Structured evidence contract
+## Contracts
 
-Changes to agent output should retain, at minimum:
+Changes to `Event`, `EvidenceBrief`, `SupervisorSynthesis` or `UserRiskReport` must update:
 
-- source agent and source type;
-- ticker and event type;
-- source identifier or URL;
-- publication/filing time and data freshness;
-- factual claims and supporting evidence;
-- inferred impact, confidence, and limitations;
-- unresolved conflicts or missing evidence.
+- `docs/contracts/*.schema.json`;
+- canonical and fault-injected fixtures;
+- contract tests;
+- relevant architecture and roadshow documentation.
 
-The final risk report should clearly separate sourced facts from model inference and state that user confirmation is required.
+The final report must separate confirmed facts, inference/conflict and unknowns. `humanGate` must remain `true`.
 
-## Start from the complete baseline
+## Branch and review workflow
 
-Issues are optional. Pull the latest `main`, then create a focused branch such as `data/sec-fixtures` or `frontend/evidence-drawer`. Small edits may follow the team's direct-commit policy; cross-cutting changes should open a Draft PR early.
+Issues are optional. Pull the latest `main`, create a focused branch and open a Draft PR early for cross-module work:
 
-Before changing `App.jsx`, `styles.css`, a shared contract, or another file already being edited, coordinate with the current owner. Keep one primary implementation area per contributor so the final integration remains reviewable.
+```bash
+git switch main
+git pull --ff-only
+git switch -c frontend/improve-evidence-drawer
+```
+
+Coordinate before editing shared files such as `App.jsx`, `styles.css`, `demoData.js`, `simulation.js` or JSON Schemas.
 
 ## Local checks
 
@@ -51,28 +54,23 @@ npm test
 npm run build
 ```
 
-Run all checks before requesting review. If a user-facing state changes, include screenshots or a short recording showing the normal path and relevant error/empty state.
+UI changes should include screenshots or a short recording of the normal path and at least one degraded state.
 
 ## Pull requests
 
-Keep pull requests small enough to review. A pull request should include:
+Include:
 
-- the user-visible outcome;
-- the intended outcome and acceptance criteria;
-- files or pipeline stages affected;
+- user-visible outcome and acceptance criteria;
+- affected pipeline stages and files;
 - test/build results;
 - screenshots for UI changes;
-- any mock/API fallback behavior;
-- financial-safety, data-quality, or privacy considerations.
+- MOCK/live fallback behavior;
+- financial-safety, data-quality, licensing and privacy considerations.
 
-At least one teammate should review a pull request. Changes to shared schemas, the four-stage pipeline, risk wording, or organization-comparison metrics also require review from the relevant architecture, data, evaluation, or industry/compliance owner.
+Use short, intentional commits, for example:
 
-## Commit style
+- `Add A-share disclosure fixture`
+- `Preserve public-trend conflict in supervisor summary`
+- `Test EvidenceBrief rejection flow`
 
-Use short, intentional commits with an imperative subject, for example:
-
-- `Add SEC filing brief fixture`
-- `Show conflicting evidence in supervisor summary`
-- `Test rumor quarantine flow`
-
-Avoid mixing broad visual restyling, schema changes, and pipeline behavior in one commit.
+Avoid mixing unrelated changes.

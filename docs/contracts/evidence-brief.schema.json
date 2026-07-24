@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://orglab.example/schemas/evidence-brief-v1.json",
-  "title": "OrgLab Sentinel EvidenceBrief v1",
+  "$id": "https://orglab.example/schemas/evidence-brief-v1.1.json",
+  "title": "OrgLab Sentinel EvidenceBrief v1.1",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -22,11 +22,11 @@
   ],
   "properties": {
     "id": { "type": "string", "minLength": 1 },
-    "schemaVersion": { "const": "1.0" },
+    "schemaVersion": { "const": "1.1" },
     "agent": { "enum": ["news", "filing"] },
     "dataMode": { "enum": ["MOCK", "LIVE_DELAYED", "LIVE"] },
     "provider": { "type": "string", "minLength": 1 },
-    "sourceClass": { "enum": ["primary_filing", "issuer_release", "licensed_news", "social", "mixed"] },
+    "sourceClass": { "enum": ["exchange_announcement", "issuer_announcement", "corporate_registry", "licensed_news", "public_trend", "social", "mixed"] },
     "asOf": { "type": "string", "minLength": 1 },
     "status": { "type": "string", "minLength": 1 },
     "confidence": { "type": "number", "minimum": 0, "maximum": 100 },
