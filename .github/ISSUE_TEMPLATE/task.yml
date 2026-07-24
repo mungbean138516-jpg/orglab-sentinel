@@ -1,0 +1,106 @@
+name: Team task
+description: Claim a scoped OrgLab Sentinel implementation, research, evaluation, or presentation task.
+title: "[Task]: "
+labels:
+  - task
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before starting, comment `/claim`, name your role lane, self-assign (or ask the lead to assign you), and open a focused branch. Keep the prototype mock-first and preserve the four-stage source-specialist pipeline.
+
+  - type: dropdown
+    id: role
+    attributes:
+      label: Primary role lane
+      options:
+        - Product / Team Lead
+        - Architecture / Backend
+        - Agent Engineering
+        - Data Engineering
+        - Frontend Engineering
+        - Experiment Evaluation
+        - Industry / Compliance
+        - Deck / Visual
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 - demo or collaboration blocker
+        - P1 - source integration or core quality
+        - P2 - experiment, polish, or extension
+    validations:
+      required: true
+
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Main pipeline stage
+      options:
+        - Stage 1 - News Agent
+        - Stage 2 - Data/Filing Agent
+        - Stage 3 - Supervisor synthesis
+        - Stage 4 - User risk report
+        - Cross-stage / platform
+        - Roadshow / team operations
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: User-visible or team-visible outcome
+      description: Describe the result, not only the implementation activity.
+      placeholder: A reviewer can trace an unverified TSLA rumor from the News Agent brief through quarantine to the final risk report.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Provide concrete, independently verifiable checks.
+      placeholder: |
+        - [ ] Given ... when ... then ...
+        - [ ] Offline mock path remains functional
+        - [ ] Error or uncertainty state is visible
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies and shared files
+      description: Link blocking issues and list files another active task may also touch.
+      placeholder: Depends on #...; likely files/components: ...
+
+  - type: textarea
+    id: data_safety
+    attributes:
+      label: Data, mock, and safety notes
+      description: State data sources, offline fallback, attribution, secrets, and any financial-risk wording impact.
+      placeholder: Uses deterministic fixture ...; no key required; does not connect a brokerage or execute a trade.
+    validations:
+      required: true
+
+  - type: input
+    id: target
+    attributes:
+      label: Expected completion window
+      placeholder: YYYY-MM-DD or before rehearsal N
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: ready
+    attributes:
+      label: Ready-to-claim check
+      options:
+        - label: The task is scoped to one reviewable outcome and does not silently change the authoritative pipeline.
+          required: true
+        - label: I will link a pull request, run tests/build, and attach evidence required by the task.
+          required: true

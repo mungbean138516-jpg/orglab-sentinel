@@ -1,0 +1,40 @@
+{
+  "name": "orglab-sentinel-prototype",
+  "version": "0.3.0",
+  "description": "A-share mock multi-agent portfolio risk alert prototype with readable charts.",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mungbean138516-jpg/orglab-sentinel.git"
+  },
+  "homepage": "https://github.com/mungbean138516-jpg/orglab-sentinel#readme",
+  "keywords": [
+    "multi-agent",
+    "risk-monitoring",
+    "evidence-provenance",
+    "organizational-design"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "dev:host": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview",
+    "preview:host": "vite preview --host 0.0.0.0",
+    "test": "node --test",
+    "check": "npm test && npm run build"
+  },
+  "dependencies": {
+    "lucide-react": "1.25.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "6.0.4",
+    "ajv": "8.17.1",
+    "vite": "8.1.5"
+  }
+}
