@@ -5,7 +5,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
-export const DEMO_NOTICE = '固定 MOCK 场景｜非实时行情｜不构成投资建议｜不连接券商';
+export const DEMO_NOTICE = '固定 MOCK 数据｜非实时｜不构成投资建议';
 
 export const holdings = [
   {
@@ -107,7 +107,7 @@ export const integrationCapabilities = [
     layer: '演示数据',
     state: 'MOCK ACTIVE',
     tone: 'mock',
-    description: '虚构证券、公告、热搜与企业信息；保证路演离线可回放。',
+    description: '当前可用。包含虚构证券、公告和舆情数据。',
   },
   {
     id: 'contracts',
@@ -115,7 +115,7 @@ export const integrationCapabilities = [
     layer: '证据治理',
     state: 'IMPLEMENTED',
     tone: 'implemented',
-    description: 'JSON Schema、Patch 父子引用、冲突与未知项均已在仓库实现。',
+    description: '当前可用。核验结果、冲突和未知项均有记录。',
   },
   {
     id: 'bailian',
@@ -123,7 +123,7 @@ export const integrationCapabilities = [
     layer: 'Agent 编排',
     state: 'PLANNED',
     tone: 'planned',
-    description: '目标用于并行分支、超时、工具调用和运行追踪；当前未真实调用。',
+    description: '尚未连接。',
   },
   {
     id: 'qwen',
@@ -131,7 +131,7 @@ export const integrationCapabilities = [
     layer: '角色推理',
     state: 'PLANNED',
     tone: 'planned',
-    description: '目标以不同提示词、权限和合同承担专项、主管与风险解释角色。',
+    description: '尚未连接。',
   },
   {
     id: 'trends',
@@ -139,7 +139,7 @@ export const integrationCapabilities = [
     layer: '舆情线索',
     state: 'PLANNED',
     tone: 'planned',
-    description: '仅发现“大家在讨论什么”；社区工具不等于平台官方数据或事实认证。',
+    description: '尚未连接。接入后仅用于发现公开讨论。',
   },
   {
     id: 'tianyancha',
@@ -147,7 +147,7 @@ export const integrationCapabilities = [
     layer: '企业事实',
     state: 'AUTH REQUIRED',
     tone: 'auth',
-    description: '目标核验企业主体、股权和经营司法信息；服务端鉴权，密钥不进入浏览器。',
+    description: '需要授权，当前不可用。',
   },
   {
     id: 'modelscope',
@@ -155,7 +155,7 @@ export const integrationCapabilities = [
     layer: '工具与评测',
     state: 'PLANNED',
     tone: 'planned',
-    description: '目标用于 MCP 发现、测试集与模型评测，不把 Hosted 当作金融合规认证。',
+    description: '尚未连接。',
   },
   {
     id: 'dingtalk',
@@ -163,7 +163,7 @@ export const integrationCapabilities = [
     layer: '治理入口',
     state: 'ROADMAP',
     tone: 'roadmap',
-    description: '目标接收风险卡片、组织复核与留痕；不承载自动交易。',
+    description: '尚未开放。',
   },
 ];
 
@@ -194,7 +194,7 @@ export const scenarios = [
     asOf: 'FIXED_DEMO_TIME',
     sourceRefs: ['BRIEF-NEWS-CN-0201', 'BRIEF-DATA-CN-0201'],
     short: '业绩预告修正',
-    title: '沪市样本 A：业绩预告修正触发核验规则',
+    title: '沪市样本 A：业绩指标低于关注线',
     severity: '高关注',
     confidence: 94,
     riskScore: null,
@@ -203,8 +203,8 @@ export const scenarios = [
     signalCount: 4,
     officialEvidenceCount: 2,
     impact: '不估算价格或收益影响',
-    recommendation: '当前状态：高关注。官方模拟公告确认指标变化，舆情叙事部分夸大；请先核对公告原文，系统不形成买卖或仓位建议。',
-    rationale: '官方披露确认毛利率情景值低于演示阈值，但“经营失速”等热搜措辞缺乏公告支持，需要把事实与推断分开。',
+    recommendation: '官方模拟公告确认指标变化，但部分舆情有夸大。请先核对公告原文。',
+    rationale: '官方披露确认毛利率低于关注线；“经营失速”等说法没有公告支持。',
     trend: {
       metric: '毛利率情景值',
       unit: '%',
@@ -215,7 +215,7 @@ export const scenarios = [
         { label: 'Q3', value: 72.8 },
         { label: 'Q4', value: 69.8 },
       ],
-      note: '全部为固定情景值；阈值是演示规则，不是行业标准。',
+      note: '低于 72% 进入关注名单',
     },
     controls: commonControls,
     evidenceBriefs: {
@@ -230,7 +230,7 @@ export const scenarios = [
         status: 'DUPLICATE_AWARE_FIXTURE',
         confidence: 76,
         headline: '热搜讨论聚焦“盈利承压”，多条内容疑似同源转载',
-        summary: '演示趋势数据发现讨论热度上升；去重后只有一个媒体源和若干同源转述，热度不等于事实。',
+        summary: '讨论热度上升，但去重后仅有一个媒体源，其余为同源转述。',
         findings: ['热度上升：情景值 +38%', '独立媒体来源：1', '同源转载：6 条已折叠'],
         evidence: [
           { id: 'SIM-TREND-CN-201', label: '模拟中文热榜线索', locator: 'fixture://trends/SIM-TREND-CN-201', tier: 'D 级线索', verified: false, freshness: 'T+0', note: '仅证明讨论出现，不证明讨论内容真实' },
@@ -249,7 +249,7 @@ export const scenarios = [
         status: 'PRIMARY_SOURCE_FIXTURE',
         confidence: 97,
         headline: '模拟业绩预告修正公告触发毛利率阈值',
-        summary: '公告 fixture 显示毛利率情景值 69.8%，低于 72.0% 演示阈值；该阈值只决定进入人工复核。',
+        summary: '模拟毛利率为 69.8%，低于 72.0% 演示阈值，进入人工复核。',
         findings: ['毛利率：69.8%（情景值）', '演示阈值：72.0%', '公告编号与证券代码匹配'],
         evidence: [
           { id: 'SIM-SSE-ANN-001', label: '模拟上交所公告', locator: 'fixture://sse/SIM-SSE-ANN-001#main', tier: 'A 级官方', verified: true, freshness: 'T+0', note: '结构仿真；不对应任何真实公司或公告' },
@@ -287,7 +287,7 @@ export const scenarios = [
     asOf: 'FIXED_DEMO_TIME',
     sourceRefs: ['BRIEF-NEWS-CN-0202', 'BRIEF-DATA-CN-0202'],
     short: '交易所问询',
-    title: '深市样本 B：交易所问询与媒体解读出现偏差',
+    title: '深市样本 B：公司尚未回复问询',
     severity: '待核验',
     confidence: 82,
     riskScore: null,
@@ -296,8 +296,8 @@ export const scenarios = [
     signalCount: 3,
     officialEvidenceCount: 1,
     impact: '不估算价格或收益影响',
-    recommendation: '当前状态：待核验。问询函真实存在，但媒体对结果的推断尚未得到公司回复支持；系统提示等待正式回复。',
-    rationale: '问询函本身是需要解释的问题，不等于监管结论。新闻端的方向性判断超出了当前官方证据。',
+    recommendation: '问询函已确认，但媒体推断尚无公司回复支持。等待正式回复。',
+    rationale: '问询函已经确认，但公司尚未回复；媒体推断不是监管结论。',
     trend: {
       metric: '证据覆盖项',
       unit: '项',
@@ -308,7 +308,7 @@ export const scenarios = [
         { label: '公告提交', value: 3 },
         { label: '等待回复', value: 3 },
       ],
-      note: '覆盖项为演示计数；达到阈值仅代表可以启动主管综合。',
+      note: '目前已覆盖 3 项关键信息',
     },
     controls: commonControls,
     evidenceBriefs: {
@@ -323,7 +323,7 @@ export const scenarios = [
         status: 'PARTIALLY_VERIFIED_FIXTURE',
         confidence: 71,
         headline: '媒体将问询解读为“结论已定”，但缺少公司正式回复',
-        summary: '两条演示内容引用同一问询函，其中一条加入方向性推断；系统保留原始链接并降低措辞强度。',
+        summary: '两条内容引用同一问询函，其中一条加入了未经证实的推断。',
         findings: ['独立来源：1', '同源转载：4 条已折叠', '方向性推断：1 项待核验'],
         evidence: [
           { id: 'SIM-MEDIA-CN-301', label: '模拟财经媒体报道', locator: 'fixture://media/SIM-MEDIA-CN-301', tier: 'C 级媒体', verified: true, freshness: 'T+0', note: '问询函编号可回溯，结论性措辞缺少支持' },
@@ -342,7 +342,7 @@ export const scenarios = [
         status: 'PRIMARY_SOURCE_FIXTURE',
         confidence: 96,
         headline: '模拟交易所问询函已确认，公司回复尚未发布',
-        summary: '公告索引命中问询函编号与证券代码；未找到公司回复，因此不能把媒体推断当作官方结论。',
+        summary: '已核对问询函编号和证券代码，尚未找到公司回复。',
         findings: ['问询函命中：1', '公司回复命中：0', '证券代码与主体匹配'],
         evidence: [
           { id: 'SIM-SZSE-INQUIRY-001', label: '模拟深交所问询函', locator: 'fixture://szse/SIM-SZSE-INQUIRY-001', tier: 'A 级官方', verified: true, freshness: 'T+0', note: '固定 fixture；不对应真实证券' },
@@ -379,7 +379,7 @@ export const scenarios = [
     asOf: 'FIXED_DEMO_TIME',
     sourceRefs: ['BRIEF-NEWS-CN-0203', 'BRIEF-DATA-CN-0203'],
     short: '供应链传闻',
-    title: '创业板样本 C：热搜出现未经证实的供应链传闻',
+    title: '创业板样本 C：供应链传闻尚无证据',
     severity: '信息隔离',
     confidence: 36,
     riskScore: null,
@@ -388,8 +388,8 @@ export const scenarios = [
     signalCount: 1,
     officialEvidenceCount: 0,
     impact: '不估算价格或收益影响',
-    recommendation: '当前状态：信息隔离。只有公共趋势线索，没有独立媒体或官方披露支持；该传闻不进入风险判断。',
-    rationale: '单一匿名来源经多个账号复制传播，热度高不代表真实性高。系统优先阻断错误信息向下游扩散。',
+    recommendation: '只有公共讨论线索，没有独立媒体或官方披露支持。暂不采信，保持隔离。',
+    rationale: '消息来自单一匿名来源，多个账号只是重复转发，暂不采信。',
     trend: {
       metric: '转载相似度',
       unit: '%',
@@ -400,7 +400,7 @@ export const scenarios = [
         { label: '+20m', value: 76 },
         { label: '+30m', value: 91 },
       ],
-      note: '固定情景值；超过阈值触发“疑似同源转载”，不代表事件真实。',
+      note: '相似度超过 80% 时按同源转载处理',
     },
     controls: commonControls,
     evidenceBriefs: {
@@ -415,7 +415,7 @@ export const scenarios = [
         status: 'UNVERIFIED_DUPLICATE_CLUSTER',
         confidence: 24,
         headline: '匿名帖子被多账号复制，未发现独立信源',
-        summary: '演示趋势中出现热度峰值，但文本相似度高、首发身份未知，系统把整组内容视为一个 D 级线索。',
+        summary: '讨论热度虽高，但内容高度相似、首发身份不明，仅按一条 D 级线索处理。',
         findings: ['原始身份：未知', '独立来源：0', '转载相似度：91%（情景值）'],
         evidence: [
           { id: 'SIM-SOCIAL-CN-401', label: '模拟匿名公共帖子', locator: 'fixture://social/SIM-SOCIAL-CN-401', tier: 'D 级线索', verified: false, freshness: 'T+0', note: '缺少作者身份、原始文件与独立佐证' },
@@ -433,7 +433,7 @@ export const scenarios = [
         status: 'NO_CORROBORATING_DISCLOSURE',
         confidence: 94,
         headline: '官方披露索引没有对应事件',
-        summary: '固定公告索引未命中该传闻；“未找到公告”只表示当前没有官方佐证，不能反向证明事件不存在。',
+        summary: '公告索引未找到相关披露。这说明暂无官方佐证，不代表事件一定不存在。',
         findings: ['公告命中：0', '澄清公告命中：0', '企业主体匹配：已完成'],
         evidence: [
           { id: 'SIM-CNINFO-INDEX-003', label: '模拟法定披露索引', locator: 'fixture://disclosure/SIM-CNINFO-INDEX-003', tier: 'A 级官方索引', verified: true, freshness: 'T+0', note: '未命中对应公告；索引结果不是事件真伪证明' },
