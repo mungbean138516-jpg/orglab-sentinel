@@ -1,4 +1,5 @@
 import { agents, organizationModes, scenarios } from '../data/demoData.js';
+import { validateEvidenceBrief, validateRunContracts } from './contracts.js';
 
 export const PIPELINE_STAGES = [
   { phase: 0, label: '事件入队' },
@@ -23,10 +24,18 @@ function materializeScenarioRun(scenario, runId) {
   const filingBriefId = `${scenario.evidenceBriefs.filing.id}:${runInstanceId}`;
   const synthesisId = `${scenario.synthesis.id}:${runInstanceId}`;
 
+  const sourceRefs = [newsBriefId, filingBriefId];
+  const claimStates = deriveClaimStates(scenario.evidenceBriefs);
+  const factStateSummary = {
+    confirmed: claimStates.confirmed.length,
+    pendingVerification: claimStates.pendingVerification.length,
+    unknown: claimStates.unknown.length,
+  };
+
   return {
     ...scenario,
     runInstanceId,
-    sourceRefs: [newsBriefId, filingBriefId],
+    sourceRefs,
     evidenceBriefs: {
       news: { ...scenario.evidenceBriefs.news, id: newsBriefId },
       filing: { ...scenario.evidenceBriefs.filing, id: filingBriefId },
@@ -34,14 +43,33 @@ function materializeScenarioRun(scenario, runId) {
     synthesis: {
       ...scenario.synthesis,
       id: synthesisId,
-      inputBriefIds: [newsBriefId, filingBriefId],
+      inputBriefIds: sourceRefs,
+      claimStates,
     },
     userReport: {
       ...scenario.userReport,
       id: `${scenario.userReport.id}:${runInstanceId}`,
       synthesisId,
+      sourceRefs,
+      factStateSummary,
     },
   };
+}
+
+function deriveClaimStates(evidenceBriefs) {
+  const grouped = {
+    confirmed: [],
+    pendingVerification: [],
+    unknown: [],
+  };
+
+  Object.values(evidenceBriefs).flatMap((brief) => brief.claims).forEach((claim) => {
+    if (claim.state === 'CONFIRMED') grouped.confirmed.push(claim.id);
+    if (claim.state === 'PENDING_VERIFICATION') grouped.pendingVerification.push(claim.id);
+    if (claim.state === 'UNKNOWN') grouped.unknown.push(claim.id);
+  });
+
+  return grouped;
 }
 
 function systemEvidence(id, label, note) {
@@ -68,7 +96,7 @@ function withFaultBase(scenario, fault, overrides) {
 
 function injectNewsTimeout(scenario) {
   return withFaultBase(scenario, 'news-timeout', {
-    confidence: Math.min(scenario.confidence, 55),
+    verificationCoverage: Math.min(scenario.verificationCoverage, 55),
     recommendation: '中文趋势来源在固定回放中超时。公告链路继续运行，但系统显式标记覆盖不完整，不用猜测内容填补缺口。',
     rationale: '一个专项来源缺失时，主管不得把单边证据包装成完整共识。',
     evidenceBriefs: {
@@ -76,10 +104,16 @@ function injectNewsTimeout(scenario) {
       news: {
         ...scenario.evidenceBriefs.news,
         status: 'SOURCE_TIMEOUT',
-        confidence: 0,
+        verificationCoverage: 0,
         headline: '故障注入：舆情 Agent 在截止时间前未返回',
         summary: '趋势适配器被模拟为不可用；系统记录降级状态，公告 Agent 仍可独立提交。',
-        findings: ['未取得舆情内容', '没有执行无限重试', '公告链路继续独立运行'],
+        claims: [{
+          id: `CLAIM-${scenario.id.toUpperCase()}-NEWS-TIMEOUT`,
+          text: '舆情来源在截止时间前返回了可核验内容',
+          state: 'UNKNOWN',
+          evidenceIds: ['SIM-RUNTIME-TIMEOUT'],
+          rationale: '趋势适配器超时，系统只能确认故障事件，不能推断舆情事实。',
+        }],
         evidence: [
           systemEvidence('SIM-RUNTIME-TIMEOUT', '模拟趋势源超时事件', '故障种子 news-timeout；不是金融事实证据'),
         ],
@@ -105,7 +139,7 @@ function injectNewsTimeout(scenario) {
 
 function injectStaleData(scenario) {
   return withFaultBase(scenario, 'stale-data', {
-    confidence: Math.min(scenario.confidence, 48),
+    verificationCoverage: Math.min(scenario.verificationCoverage, 48),
     recommendation: '公告缓存超过演示新鲜度阈值。系统保留旧记录用于追踪，但不把它当作当前事实。',
     rationale: '来源存在不等于来源仍然新鲜；过期数据必须进入缺口，而不是继续支撑结论。',
     evidenceBriefs: {
@@ -113,10 +147,14 @@ function injectStaleData(scenario) {
       filing: {
         ...scenario.evidenceBriefs.filing,
         status: 'STALE_SOURCE_FIXTURE',
-        confidence: 30,
+        verificationCoverage: 30,
         headline: `故障注入：${scenario.evidenceBriefs.filing.headline}`,
         summary: '公告适配器返回的 fixture 被标记为 T+7，超过演示新鲜度阈值，合同仍记录但不采信为当前确认。',
-        findings: ['缓存年龄：T+7（情景值）', '演示阈值：T+1', '需要重新获取官方披露'],
+        claims: scenario.evidenceBriefs.filing.claims.map((claim) => ({
+          ...claim,
+          state: 'UNKNOWN',
+          rationale: `来源已超过新鲜度阈值；${claim.rationale}`,
+        })),
         evidence: scenario.evidenceBriefs.filing.evidence.map((item) => ({
           ...item,
           verified: false,
@@ -145,7 +183,7 @@ function injectStaleData(scenario) {
 
 function injectDuplicateSource(scenario) {
   return withFaultBase(scenario, 'duplicate-source', {
-    confidence: Math.min(scenario.confidence, 58),
+    verificationCoverage: Math.min(scenario.verificationCoverage, 58),
     recommendation: '多篇舆情内容被识别为同源转载。系统折叠重复项，只保留一条线索，不把转载数量当作交叉验证。',
     rationale: '来源数量与独立来源数量不是一回事；同源复制会制造虚假的确定感。',
     evidenceBriefs: {
@@ -153,10 +191,25 @@ function injectDuplicateSource(scenario) {
       news: {
         ...scenario.evidenceBriefs.news,
         status: 'DUPLICATE_CLUSTER_COLLAPSED',
-        confidence: Math.min(scenario.evidenceBriefs.news.confidence, 45),
+        verificationCoverage: Math.min(scenario.evidenceBriefs.news.verificationCoverage, 45),
         headline: `故障注入：${scenario.evidenceBriefs.news.headline}`,
         summary: '实验控制器把多条文本标记为同一上游线索，舆情 Agent 已折叠为一个 D/C 级证据簇。',
-        findings: ['展示条目：7', '独立来源：1', '重复项：6 条已折叠'],
+        claims: [
+          {
+            id: `CLAIM-${scenario.id.toUpperCase()}-DUPLICATE`,
+            text: '多条公共讨论属于同源转载',
+            state: 'CONFIRMED',
+            evidenceIds: ['SIM-DUPLICATE-CLUSTER'],
+            rationale: '去重记录显示七条内容只有一个独立上游来源。',
+          },
+          {
+            id: `CLAIM-${scenario.id.toUpperCase()}-DUPLICATE-SUBJECT`,
+            text: '被转载内容所描述的事件真实发生',
+            state: 'PENDING_VERIFICATION',
+            evidenceIds: [scenario.evidenceBriefs.news.evidence[0].id],
+            rationale: '同源传播只能证明线索存在，不能形成独立交叉验证。',
+          },
+        ],
         evidence: [
           ...scenario.evidenceBriefs.news.evidence.slice(0, 1),
           systemEvidence('SIM-DUPLICATE-CLUSTER', '模拟同源聚类记录', '记录去重结果；不是新增金融证据'),
@@ -185,7 +238,7 @@ function injectDuplicateSource(scenario) {
 
 function injectConflict(scenario) {
   return withFaultBase(scenario, 'conflicting-evidence', {
-    confidence: Math.min(scenario.confidence, 42),
+    verificationCoverage: Math.min(scenario.verificationCoverage, 42),
     recommendation: '两份专项简报方向冲突。系统隔离综合结论，不形成操作建议，等待可裁决冲突的 A 级来源。',
     rationale: '冲突证据不能被平均成看似确定的答案；风险门禁优先阻断错误传播。',
     evidenceBriefs: {
@@ -193,10 +246,14 @@ function injectConflict(scenario) {
       news: {
         ...scenario.evidenceBriefs.news,
         status: 'CONFLICT_INJECTED_FIXTURE',
-        confidence: Math.min(scenario.evidenceBriefs.news.confidence, 61),
+        verificationCoverage: Math.min(scenario.evidenceBriefs.news.verificationCoverage, 61),
         headline: `故障注入：${scenario.evidenceBriefs.news.headline}`,
         summary: '实验控制器将舆情简报方向设置为与公告简报不一致，用于测试冲突治理。',
-        findings: ['舆情方向与公告侧相反', '冲突标记已保留', '禁止主管静默择一'],
+        claims: scenario.evidenceBriefs.news.claims.map((claim) => ({
+          ...claim,
+          state: claim.state === 'CONFIRMED' ? 'PENDING_VERIFICATION' : claim.state,
+          rationale: `故障注入后与公告侧方向冲突；${claim.rationale}`,
+        })),
         evidence: [
           ...scenario.evidenceBriefs.news.evidence,
           systemEvidence('SIM-FAULT-CONFLICT', '模拟证据冲突标记', '故障种子 conflicting-evidence；不是金融事实证据'),
@@ -222,8 +279,16 @@ function injectConflict(scenario) {
 }
 
 function injectContractFailure(scenario) {
+  const rejectedBrief = structuredClone(scenario.evidenceBriefs.news);
+  delete rejectedBrief.evidence[0].locator;
+  const rejection = validateEvidenceBrief(rejectedBrief);
+
+  if (rejection.valid) {
+    throw new Error('contract-failure fixture 必须生成一份无法通过 EvidenceBrief v1.2 的输入');
+  }
+
   return withFaultBase(scenario, 'contract-failure', {
-    confidence: Math.min(scenario.confidence, 40),
+    verificationCoverage: Math.min(scenario.verificationCoverage, 40),
     recommendation: '舆情 Agent 的原始输出未通过 EvidenceBrief 校验。系统拒收不合格 Patch，并生成可追踪的降级占位记录。',
     rationale: '结构化合同是 Agent 之间的安全边界；字段缺失时宁可显式降级，也不让自由文本直接进入主管结论。',
     evidenceBriefs: {
@@ -231,14 +296,20 @@ function injectContractFailure(scenario) {
       news: {
         ...scenario.evidenceBriefs.news,
         status: 'CONTRACT_REJECTED',
-        confidence: 0,
+        verificationCoverage: 0,
         headline: '故障注入：EvidenceBrief 缺少必填字段，原始 Patch 已拒收',
         summary: '页面展示的是校验器生成的安全占位记录，不是被拒收的原始 Agent 输出。',
-        findings: ['缺失字段：source locator（情景值）', '原始 Patch：REJECTED', '自由文本未进入主管上下文'],
+        claims: [{
+          id: `CLAIM-${scenario.id.toUpperCase()}-CONTRACT-REJECTED`,
+          text: '被拒收的舆情输出可以作为金融事实进入主管上下文',
+          state: 'UNKNOWN',
+          evidenceIds: ['SIM-SCHEMA-REJECT'],
+          rationale: '原始简报缺少必填 locator，运行时校验失败；系统只保留拒收事件，不保留其金融结论。',
+        }],
         evidence: [
           systemEvidence('SIM-SCHEMA-REJECT', '模拟合同校验失败事件', '校验失败记录；不是金融事实证据'),
         ],
-        gaps: ['一份通过 EvidenceBrief v1.1 校验的舆情简报'],
+        gaps: ['一份通过 EvidenceBrief v1.2 校验的舆情简报'],
       },
     },
     synthesis: {
@@ -255,6 +326,12 @@ function injectContractFailure(scenario) {
       exposureSummary: `模拟关注权重 ${scenario.exposure}%；不合格 Agent 输出不参与操作判断。`,
       checklist: ['查看 REJECTED Patch', '修复缺失字段', '重新提交 EvidenceBrief', '校验通过后重新综合'],
     },
+    contractAudit: {
+      attemptedArtifact: rejectedBrief.id,
+      accepted: false,
+      schemaVersion: '1.2',
+      errors: rejection.errors,
+    },
   });
 }
 
@@ -268,7 +345,17 @@ export function applyFaultToScenario(scenario, fault = 'none', runId = 'DEMO') {
     'contract-failure': () => injectContractFailure(scenario),
   }[fault]?.() ?? scenario;
 
-  return materializeScenarioRun(faulted, runId);
+  const run = materializeScenarioRun(faulted, runId);
+  const contractValidation = validateRunContracts(run);
+
+  if (!contractValidation.valid) {
+    const summary = contractValidation.errors
+      .map((error) => `${error.artifact}${error.path}: ${error.message}`)
+      .join('; ');
+    throw new Error(`运行结果未通过合同校验：${summary}`);
+  }
+
+  return { ...run, contractValidation };
 }
 
 export function getAgentRuntime(phase, scenario, fault = 'none') {
@@ -325,7 +412,7 @@ export function getPatchLedger(scenario, phase, fault = 'none', reviewed = false
       id: patchIds[0],
       author: '舆情 Agent',
       target: `/briefs/news/${scenario.ticker}`,
-      summary: phase >= 2 ? `status: ${scenario.evidenceBriefs.news.status} · rule_coverage: ${scenario.evidenceBriefs.news.confidence}%` : '等待 EvidenceBrief 提交',
+      summary: phase >= 2 ? `status: ${scenario.evidenceBriefs.news.status} · rule_coverage: ${scenario.evidenceBriefs.news.verificationCoverage}%` : '等待 EvidenceBrief 提交',
       evidence: phase >= 2 ? scenario.evidenceBriefs.news.evidence.map((item) => item.id) : [],
       status: newsPatchStatus,
     },
@@ -333,7 +420,7 @@ export function getPatchLedger(scenario, phase, fault = 'none', reviewed = false
       id: patchIds[1],
       author: '公告 Agent',
       target: `/briefs/data/${scenario.ticker}`,
-      summary: phase >= 2 ? `status: ${scenario.evidenceBriefs.filing.status} · rule_coverage: ${scenario.evidenceBriefs.filing.confidence}%` : '等待 EvidenceBrief 提交',
+      summary: phase >= 2 ? `status: ${scenario.evidenceBriefs.filing.status} · rule_coverage: ${scenario.evidenceBriefs.filing.verificationCoverage}%` : '等待 EvidenceBrief 提交',
       evidence: phase >= 2 ? scenario.evidenceBriefs.filing.evidence.map((item) => item.id) : [],
       status: filingPatchStatus,
     },
@@ -347,7 +434,7 @@ export function getPatchLedger(scenario, phase, fault = 'none', reviewed = false
     },
     {
       id: patchIds[3],
-      author: '风险 Agent',
+      author: '风险解释 Agent',
       target: `/reports/risk/${scenario.ticker}`,
       summary: phase >= 5 ? `action: ${scenario.userReport.action} · human_gate: REQUIRED` : '等待 SupervisorSynthesis 与风险解释',
       evidence: phase >= 5 ? [patchIds[2]] : [],
@@ -460,66 +547,8 @@ export function runOrganizationExperiment(scenarioId, faultId = 'none') {
 }
 
 export function validateScenarioContract(scenario) {
-  const errors = [];
-  const requiredScenarioFields = [
-    'id',
-    'schemaVersion',
-    'dataMode',
-    'ticker',
-    'eventType',
-    'asOf',
-    'sourceRefs',
-    'title',
-    'evidenceBriefs',
-    'synthesis',
-    'userReport',
-  ];
-  requiredScenarioFields.forEach((field) => {
-    if (scenario[field] === undefined || scenario[field] === null) errors.push(`missing:${field}`);
-  });
-
-  ['news', 'filing'].forEach((source) => {
-    const brief = scenario.evidenceBriefs?.[source];
-    if (!brief) {
-      errors.push(`missing:evidenceBriefs.${source}`);
-      return;
-    }
-    [
-      'id',
-      'schemaVersion',
-      'agent',
-      'dataMode',
-      'provider',
-      'sourceClass',
-      'asOf',
-      'status',
-      'confidence',
-      'headline',
-      'summary',
-      'findings',
-      'evidence',
-      'gaps',
-    ].forEach((field) => {
-      if (brief[field] === undefined || brief[field] === null) errors.push(`missing:evidenceBriefs.${source}.${field}`);
-    });
-    brief.evidence?.forEach((item, index) => {
-      ['id', 'label', 'locator', 'tier', 'verified', 'freshness', 'note'].forEach((field) => {
-        if (item[field] === undefined || item[field] === null) errors.push(`missing:evidenceBriefs.${source}.evidence.${index}.${field}`);
-      });
-    });
-  });
-
-  ['id', 'schemaVersion', 'inputBriefIds', 'agreement', 'conflicts', 'missing', 'decision'].forEach((field) => {
-    if (scenario.synthesis?.[field] === undefined || scenario.synthesis?.[field] === null) errors.push(`missing:synthesis.${field}`);
-  });
-
-  ['id', 'schemaVersion', 'synthesisId', 'humanGate', 'status', 'action', 'exposureSummary', 'checklist'].forEach((field) => {
-    if (scenario.userReport?.[field] === undefined || scenario.userReport?.[field] === null) errors.push(`missing:userReport.${field}`);
-  });
-
-  if (JSON.stringify(scenario.sourceRefs) !== JSON.stringify(scenario.synthesis?.inputBriefIds)) errors.push('source_refs_must_match_synthesis_inputs');
-  if (scenario.userReport?.synthesisId !== scenario.synthesis?.id) errors.push('report_must_reference_synthesis');
+  const errors = validateRunContracts(scenario).errors
+    .map((error) => `${error.artifact}${error.path}:${error.message}`);
   if (scenario.controls?.humanGate !== true) errors.push('human_gate_must_be_true');
-  if (scenario.userReport?.humanGate !== true) errors.push('user_report_human_gate_must_be_true');
   return errors;
 }

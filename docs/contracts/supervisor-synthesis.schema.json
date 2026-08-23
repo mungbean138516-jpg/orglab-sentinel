@@ -1,14 +1,24 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://orglab.example/schemas/supervisor-synthesis-v1.1.json",
-  "title": "OrgLab Sentinel SupervisorSynthesis v1.1",
+  "$id": "https://orglab.example/schemas/supervisor-synthesis-v1.2.json",
+  "title": "OrgLab Sentinel SupervisorSynthesis v1.2",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "schemaVersion", "inputBriefIds", "agreement", "conflicts", "missing", "decision"],
+  "required": ["id", "schemaVersion", "inputBriefIds", "claimStates", "agreement", "conflicts", "missing", "decision"],
   "properties": {
     "id": { "type": "string", "minLength": 1 },
-    "schemaVersion": { "const": "1.1" },
+    "schemaVersion": { "const": "1.2" },
     "inputBriefIds": { "type": "array", "items": { "type": "string" }, "minItems": 2, "maxItems": 2, "uniqueItems": true },
+    "claimStates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confirmed", "pendingVerification", "unknown"],
+      "properties": {
+        "confirmed": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "pendingVerification": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "unknown": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
     "agreement": { "type": "string", "minLength": 1 },
     "conflicts": { "type": "array", "items": { "type": "string" } },
     "missing": { "type": "array", "items": { "type": "string" } },

@@ -921,7 +921,7 @@ main {
 
 .balance-legend {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   margin-top: 9px;
 }
@@ -953,6 +953,15 @@ main {
 
 .balance-legend .conflict svg {
   color: var(--danger);
+}
+
+.balance-conflict {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  color: var(--danger);
+  font-size: 7.5px;
 }
 
 .alert-actions {
@@ -2790,6 +2799,64 @@ main {
   color: var(--muted);
   font-size: 8px;
   line-height: 1.65;
+}
+
+.claim-list {
+  display: grid;
+  gap: 7px;
+}
+
+.claim-item {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 9px;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.13);
+}
+
+.claim-item > span {
+  align-self: start;
+  padding: 4px 5px;
+  border-radius: 999px;
+  color: var(--source);
+  background: var(--source-soft);
+  font-size: 7px;
+  text-align: center;
+}
+
+.claim-confirmed > span {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.claim-unknown > span {
+  color: var(--warning);
+  background: var(--warning-soft);
+}
+
+.claim-item b,
+.claim-item p,
+.claim-item code {
+  display: block;
+}
+
+.claim-item b {
+  font-size: 8.5px;
+}
+
+.claim-item p {
+  margin: 4px 0;
+  color: var(--muted);
+  font-size: 7.5px;
+  line-height: 1.45;
+}
+
+.claim-item code {
+  color: var(--faint);
+  font-size: 6.5px;
+  word-break: break-all;
 }
 
 .evidence-items {

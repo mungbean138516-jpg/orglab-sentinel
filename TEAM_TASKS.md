@@ -6,8 +6,8 @@ This is a lightweight coordination guide for a mixed technical and non-technical
 
 | Stage | Input | Required output |
 | --- | --- | --- |
-| Public-trend Agent | Chinese news / trend fixture or adapter | Cited, deduplicated `EvidenceBrief v1.1`; heat remains a clue |
-| Disclosure Agent | Exchange / issuer / enterprise fixture or adapter | Independent factual `EvidenceBrief v1.1` |
+| Public-trend Agent | Chinese news / trend fixture or adapter | Cited, deduplicated `EvidenceBrief v1.2`; heat remains a clue |
+| Disclosure Agent | Exchange / issuer / enterprise fixture or adapter | Independent factual `EvidenceBrief v1.2` |
 | Supervisor | Both briefs or explicit degraded records | Agreement, conflict, unknowns and decision |
 | Risk explanation | Supervisor synthesis | Human-readable report, verification checklist and no trade |
 
@@ -16,7 +16,7 @@ This is a lightweight coordination guide for a mixed technical and non-technical
 | Lane | Primary ownership | Useful next contribution |
 | --- | --- | --- |
 | Product / Lead | Scope, audience, opening and closing | Freeze the 90-second demo and 8-minute story |
-| Architecture | Contracts, orchestration and trust boundaries | Review v1.1 schemas and target Bailian flow |
+| Architecture | Contracts, orchestration and trust boundaries | Review v1.2 schemas and target Bailian flow |
 | Agent design | Role prompts/rules and failure recovery | Draft Qwen role instructions without expanding permissions |
 | Data | Fictional fixtures and future adapters | Define official disclosure, trends and enterprise adapters |
 | Frontend | Dashboard, report drawer and accessibility | Refine evidence drill-down and mobile presentation |
@@ -45,7 +45,7 @@ This is a lightweight coordination guide for a mixed technical and non-technical
 
 - Define a server-side official-disclosure adapter.
 - Define read-only Tianyancha and Chinese trends MCP tool policies.
-- Map the deterministic v1.1 contracts into a Bailian workflow design.
+- Map the deterministic v1.2 contracts into a Bailian workflow design.
 - Keep the local MOCK path as the roadshow default.
 
 ### P2 — evaluation

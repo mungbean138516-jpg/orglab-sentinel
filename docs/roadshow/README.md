@@ -3,7 +3,7 @@
 > 状态：`IMPLEMENTED · MOCK`  
 > 用途：技术说明、路演讲稿与 PPT 素材的统一事实来源。
 
-OrgLab Sentinel 是一个**多源证据驱动的 Agent 风险情报原型**。新闻／舆情 Agent 与公告／数据 Agent 分头处理不同来源，主管 Agent 保留一致点、冲突和未知项，风险 Agent 再将结果翻译成用户可读的风险说明；系统不替用户交易。
+OrgLab Sentinel 是一个**多源证据驱动的 Agent 风险情报原型**。新闻／舆情 Agent 与公告／数据 Agent 分头处理不同来源，主管 Agent 保留一致点、冲突和未知项，风险解释 Agent 再将结果翻译成用户可读的风险说明；系统不替用户交易。
 
 ## 状态图例
 

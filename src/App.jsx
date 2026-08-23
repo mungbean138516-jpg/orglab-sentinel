@@ -323,8 +323,13 @@ function Dashboard({ scenario, phase, runtimeAgents, ledger, reviewed, runScenar
           <h2>{scenario.title}</h2>
           <div className="source-row">
             <span className="source-chip">演示数据</span>
+            {reportReady && (
+              <span className="source-chip">
+                合同 v{scenario.contractValidation?.schemaVersion} · {scenario.contractValidation?.valid ? 'PASS' : 'FAIL'}
+              </span>
+            )}
             {currentFault && <span className="fault-chip">FAULT · {currentFault.label}</span>}
-            <span>核验覆盖 {reportReady ? `${scenario.confidence}%` : '计算中'}</span>
+            <span>核验覆盖 {reportReady ? `${scenario.verificationCoverage}%` : '计算中'}</span>
             <span>官方证据 {officialEvidence} 条</span>
           </div>
           <div className="conclusion-box">
@@ -410,7 +415,7 @@ function EvidenceBriefCard({ type, brief, phase, onOpen }) {
       </div>
       <h4>{ready ? brief.headline : phase === 1 ? '正在核验…' : '等待开始'}</h4>
       <p>{ready ? brief.summary : '简报通过格式校验后，才会进入汇总。'}</p>
-      <div className="brief-meta"><span>数据：{brief.dataMode}</span><span>证据：{ready ? brief.evidence.length : '—'}</span><span>覆盖：{ready ? `${brief.confidence}%` : '—'}</span></div>
+      <div className="brief-meta"><span>数据：{brief.dataMode}</span><span>证据：{ready ? brief.evidence.length : '—'}</span><span>覆盖：{ready ? `${brief.verificationCoverage}%` : '—'}</span></div>
       <button type="button" className="text-action" disabled={!ready} onClick={onOpen}>{ready ? '查看证据' : '等待提交'} <ChevronRight size={14} /></button>
     </article>
   );
@@ -422,7 +427,7 @@ function PipelineFlow({ agents, phase, reviewed }) {
   const supervisor = agents.find((agent) => agent.key === 'supervisor');
   const risk = agents.find((agent) => agent.key === 'risk');
   return (
-    <div className="pipeline-scroll" aria-label="舆情与公告 Agent 逻辑并行，之后依次经过主管、风险 Agent 和用户门禁">
+    <div className="pipeline-scroll" aria-label="舆情与公告 Agent 逻辑并行，之后依次经过主管、风险解释 Agent 和用户门禁">
       <div className="pipeline-flow">
         <div className="parallel-sources">
           <AgentNode agent={news} />
@@ -541,7 +546,7 @@ function ArchitecturePage() {
     ['02', '总调度', '百炼 Workflow', 'PLANNED'],
     ['03', '岗位能力', '通义千问专项、主管与风险角色', 'PLANNED'],
     ['04', '工具连接', 'MCP + 官方披露适配器', 'PLANNED'],
-    ['05', '确定性治理', 'EvidenceBrief v1.1 + Patch 账本', 'IMPLEMENTED'],
+    ['05', '确定性治理', 'EvidenceBrief v1.2 + Patch 账本', 'IMPLEMENTED'],
     ['06', '人工复核', '网页门禁 / 钉钉协同', 'MOCK / ROADMAP'],
   ];
 
@@ -664,7 +669,7 @@ function LabPage({ scenario, fault, runScenario }) {
         <div className="control-group"><span className="step-label">1 · 固定事件</span><div className="scenario-pills">{scenarios.map((item) => <button type="button" disabled={running} aria-pressed={item.id === selectedScenarioId} className={item.id === selectedScenarioId ? 'active' : ''} onClick={() => setSelectedScenarioId(item.id)} key={item.id}>{item.short}</button>)}</div></div>
         <div className="event-tag-bank"><span>场景覆盖标签</span>{eventTags.map((tag) => <i key={tag}>{tag}</i>)}</div>
         <div className="control-group"><span className="step-label">2 · 注入故障</span><div className="scenario-pills fault-pills">{faults.map((item) => <button type="button" title={item.detail} disabled={running} aria-pressed={item.id === selectedFaultId} className={item.id === selectedFaultId ? 'active' : ''} onClick={() => setSelectedFaultId(item.id)} key={item.id}>{item.label}</button>)}</div></div>
-        <div className="experiment-locks"><span><LockKeyhole size={13} />目标预算 ¥3.50</span><span><LockKeyhole size={13} />固定 fixture</span><span><LockKeyhole size={13} />seed 20260722</span><span><LockKeyhole size={13} />合同 v1.1</span></div>
+        <div className="experiment-locks"><span><LockKeyhole size={13} />目标预算 ¥3.50</span><span><LockKeyhole size={13} />固定 fixture</span><span><LockKeyhole size={13} />seed 20260722</span><span><LockKeyhole size={13} />合同 v1.2</span></div>
       </section>
 
       <div className="result-caption">
@@ -767,6 +772,12 @@ function LedgerView({ ledger }) {
   );
 }
 
+const claimStateMeta = {
+  CONFIRMED: { label: '已确认', className: 'confirmed' },
+  PENDING_VERIFICATION: { label: '待核实', className: 'pending' },
+  UNKNOWN: { label: '暂无法判断', className: 'unknown' },
+};
+
 function EvidenceView({ scenario }) {
   return (
     <div className="evidence-view">
@@ -779,7 +790,7 @@ function EvidenceView({ scenario }) {
         <div className="evidence-overview-meta">
           <span>{scenario.severity}</span>
           <span>{scenario.ticker}</span>
-          <span>核验覆盖 {scenario.confidence}%</span>
+          <span>核验覆盖 {scenario.verificationCoverage}%</span>
         </div>
       </section>
 
@@ -809,9 +820,24 @@ function EvidenceView({ scenario }) {
             <div className="schema-row">
               <code>数据：{brief.dataMode}</code>
               <code>来源：{brief.provider}</code>
-              <code>覆盖：{brief.confidence}%</code>
+              <code>覆盖：{brief.verificationCoverage}%</code>
             </div>
-            <h4>关键信息</h4><ul>{brief.findings.map((finding) => <li key={finding}>{finding}</li>)}</ul>
+            <h4>事实状态</h4>
+            <div className="claim-list">
+              {brief.claims.map((claim) => {
+                const state = claimStateMeta[claim.state];
+                return (
+                  <article key={claim.id} className={`claim-item claim-${state.className}`}>
+                    <span>{state.label}</span>
+                    <div>
+                      <b>{claim.text}</b>
+                      <p>{claim.rationale}</p>
+                      <code>{claim.evidenceIds.join(' · ') || '无事实证据引用'}</code>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
             <h4>证据</h4><div className="evidence-items">{brief.evidence.map((item) => <div key={item.id}><span className={item.verified ? 'verified-dot' : 'unverified-dot'} /><div><b>{item.label}</b><small>{item.id} · {item.tier} · {item.freshness}</small><code>{item.locator}</code><p>{item.note}</p></div></div>)}</div>
             <h4>仍需确认</h4><ul>{brief.gaps.map((gap) => <li key={gap}>{gap}</li>)}</ul>
           </section>
@@ -824,7 +850,7 @@ function EvidenceView({ scenario }) {
 function RulesView() {
   const rules = [
     ['G-01', '来源分权', '舆情 Agent 与公告 Agent 不能替对方修改简报。'],
-    ['G-02', '合同先行', '所有状态变化必须通过 EvidenceBrief v1.1 与带证据 ID 的 Patch。'],
+    ['G-02', '合同先行', '所有状态变化必须通过 EvidenceBrief v1.2 与带证据 ID 的 Patch。'],
     ['G-03', '冲突保留', '主管不得把相互冲突的事实简单平均或静默删除。'],
     ['G-04', '热搜只作线索', '同源转载必须折叠；单一匿名来源默认进入隔离。'],
     ['G-05', '人类门禁', '报告只能被标记为已阅读，系统没有券商或交易工具。'],

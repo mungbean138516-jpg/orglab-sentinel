@@ -1,7 +1,7 @@
 # 结构化合同与安全边界
 
-> 当前合同：`IMPLEMENTED · MOCK · v1.1`  
-> 更细粒度的事实／推断字段：`PLANNED · v1.2`
+> 当前合同：`IMPLEMENTED · MOCK · v1.2`
+> Claim 级事实状态与运行时拒收：`IMPLEMENTED · MOCK · v1.2`
 
 ## 为什么合同比 Agent 数量重要
 
@@ -12,9 +12,9 @@
 | 合同 | 生产者 | 消费者 | 必须保留 |
 | --- | --- | --- | --- |
 | `Event` | 事件入口 | 两个专项 Agent | 事件 ID、市场、时间、来源引用、数据模式 |
-| `EvidenceBrief` | 新闻／公告 Agent | 主管 Agent | 来源、证据 ID、发现、未知项、置信规则 |
-| `SupervisorSynthesis` | 主管 Agent | 风险 Agent | 一致点、冲突、缺失证据、决策 |
-| `UserRiskReport` | 风险 Agent | 用户 | 证据状态、风险解释、核验清单、人工门禁 |
+| `EvidenceBrief` | 新闻／公告 Agent | 主管 Agent | 来源、Claim 状态、证据 ID、未知项、核验覆盖 |
+| `SupervisorSynthesis` | 主管 Agent | 风险解释 Agent | 一致点、冲突、缺失证据、决策 |
+| `UserRiskReport` | 风险解释 Agent | 用户 | 证据状态、风险解释、核验清单、人工门禁 |
 
 当前 Schema 位于 [`../contracts/`](../contracts/)。
 
@@ -23,17 +23,17 @@
 1. 下游结论必须引用上游记录。
 2. `MOCK`、`LIVE_DELAYED`、`LIVE` 不得静默互换。
 3. “未找到”不等于“事件不存在”。
-4. 置信度不能替代来源层级。
+4. 核验覆盖率不能替代来源层级。
 5. 冲突不能被删除或平均。
 6. 缺失来源必须进入 `gaps` 或 `missing`。
 7. `humanGate` 永远为必需。
 8. 风险报告不得生成自动交易指令。
 
-## A 股 v1.1 已实现范围
+## A 股 v1.2 已实现范围
 
 ### Event
 
-当前 v1.1 使用 A 股式证券标识：
+当前 v1.2 使用 A 股式证券标识：
 
 ```json
 {
@@ -52,7 +52,7 @@
 
 ### EvidenceBrief
 
-v1.1 来源类别：
+v1.2 来源类别：
 
 - `exchange_announcement`
 - `issuer_announcement`
@@ -62,18 +62,19 @@ v1.1 来源类别：
 - `social`
 - `mixed`
 
-当前 `findings` 仍为字符串数组，证据引用保存在同一简报的 `evidence` 中。下一版可将 finding 升级为带类型和引用的对象：
+当前 `claims` 已升级为带状态与证据引用的对象，运行时会拒绝悬空的 `evidenceIds`：
 
 ```json
 {
-  "type": "fact",
+  "id": "CLAIM-EARNINGS-F1",
   "text": "示例公司发布业绩预告修正",
+  "state": "CONFIRMED",
   "evidenceIds": ["SIM-CNINFO-001"],
-  "asOf": "FIXED_DEMO_TIME"
+  "rationale": "A 级官方 fixture 已确认公告存在"
 }
 ```
 
-`type` 只能是 `fact`、`inference` 或 `unknown`。
+`state` 只能是 `CONFIRMED`、`PENDING_VERIFICATION` 或 `UNKNOWN`。每个 `evidenceId` 必须指向同一简报内真实存在的证据，否则运行时直接拒收。
 
 ### SupervisorSynthesis
 
@@ -90,7 +91,7 @@ v1.1 来源类别：
 
 ### UserRiskReport
 
-v1.1 已删除容易被理解为仓位建议的 `targetRange`，改用：
+v1.2 已删除容易被理解为仓位建议的 `targetRange`，改用：
 
 ```json
 {
@@ -106,7 +107,7 @@ v1.1 已删除容易被理解为仓位建议的 `targetRange`，改用：
 - `WATCH_FOR_CONFIRMATION`
 - `NO_ACTION_INSUFFICIENT_EVIDENCE`
 
-隔离场景通过 `status`、主管决策和核验清单共同表达；如果以后需要机器可读的独立隔离动作，再在 v1.2 中版本化新增。
+隔离场景通过 `status`、主管决策和核验清单共同表达；如果以后需要机器可读的独立隔离动作，应在后续合同版本中新增。
 
 ## 风险分和图表
 

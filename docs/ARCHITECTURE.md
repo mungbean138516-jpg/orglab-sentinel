@@ -4,7 +4,7 @@
 
 ## Product invariant
 
-Different source classes belong to different specialist Agents. Specialists create evidence; the Supervisor reconciles it; the Risk Agent explains it; the user remains the only decision-maker.
+Different source classes belong to different specialist Agents. Specialists create evidence; the Supervisor reconciles it; the Risk Explanation Agent explains it; the user remains the only decision-maker.
 
 The system never turns heat, repetition, missing data, or model confidence into a buy/sell instruction.
 
@@ -16,7 +16,7 @@ flowchart TD
     SM --> F["Fixed fictional A-share fixtures"]
     F --> N["Chinese public-trend Agent"]
     F --> D["Disclosure / data Agent"]
-    N --> C["EvidenceBrief v1.1 validation"]
+    N --> C["AJV runtime validation · v1.2"]
     D --> C
     C --> S["Supervisor synthesis"]
     S --> R["Risk explanation"]
@@ -49,7 +49,7 @@ stateDiagram-v2
 | Chinese public-trend Agent | `/sources/trends/*`, `/briefs/news/*` | Treat heat as fact, modify disclosures, recommend a trade |
 | Disclosure / data Agent | `/sources/disclosures/*`, `/briefs/data/*` | Interpret social intent, output target price or position |
 | Supervisor | `/synthesis/*`, `/conflicts/*` | Fetch new evidence, invent facts, erase disagreement |
-| Risk Agent | `/reports/risk/*`, `/governance/review/*` | Connect a broker, predict returns, execute an order |
+| Risk Explanation Agent | `/reports/risk/*`, `/governance/review/*` | Connect a broker, predict returns, execute an order |
 
 These are contractual and visual boundaries in the prototype. Production requires server-side identity and capability enforcement.
 
@@ -58,9 +58,9 @@ These are contractual and visual boundaries in the prototype. Production require
 Each run produces:
 
 1. an A-share `Event`;
-2. two independent `EvidenceBrief v1.1` records;
-3. one `SupervisorSynthesis v1.1`;
-4. one `UserRiskReport v1.1`;
+2. two independent `EvidenceBrief v1.2` records with claim-level states and evidence references;
+3. one `SupervisorSynthesis v1.2` that retains all confirmed, pending and unknown claim IDs;
+4. one `UserRiskReport v1.2` with source lineage and fact-state counts;
 5. ordered Patch records linking every downstream result to its parent evidence.
 
 The browser ledger is deterministic display state, not a blockchain or cryptographically immutable log. Production persistence would require append-only storage, identity, authorization, timestamps, hashes and checkpoints.
@@ -73,7 +73,7 @@ The fixed replay supports:
 - stale disclosure data;
 - duplicate / same-origin posts;
 - disclosure versus public-trend conflict;
-- EvidenceBrief contract rejection.
+- runtime EvidenceBrief rejection followed by a schema-valid degraded record.
 
 Every fault leaves a visible state and still produces a safe, non-execution report.
 

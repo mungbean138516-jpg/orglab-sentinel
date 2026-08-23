@@ -1,14 +1,26 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://orglab.example/schemas/user-risk-report-v1.1.json",
-  "title": "OrgLab Sentinel UserRiskReport v1.1",
+  "$id": "https://orglab.example/schemas/user-risk-report-v1.2.json",
+  "title": "OrgLab Sentinel UserRiskReport v1.2",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "schemaVersion", "synthesisId", "humanGate", "status", "action", "exposureSummary", "checklist"],
+  "required": ["id", "schemaVersion", "synthesisId", "asOf", "sourceRefs", "factStateSummary", "humanGate", "status", "action", "exposureSummary", "checklist"],
   "properties": {
     "id": { "type": "string", "minLength": 1 },
-    "schemaVersion": { "const": "1.1" },
+    "schemaVersion": { "const": "1.2" },
     "synthesisId": { "type": "string", "minLength": 1 },
+    "asOf": { "type": "string", "minLength": 1 },
+    "sourceRefs": { "type": "array", "items": { "type": "string" }, "minItems": 2, "uniqueItems": true },
+    "factStateSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["confirmed", "pendingVerification", "unknown"],
+      "properties": {
+        "confirmed": { "type": "integer", "minimum": 0 },
+        "pendingVerification": { "type": "integer", "minimum": 0 },
+        "unknown": { "type": "integer", "minimum": 0 }
+      }
+    },
     "humanGate": { "const": true },
     "status": { "type": "string", "minLength": 1 },
     "action": { "enum": ["REVIEW_EVIDENCE", "WATCH_FOR_CONFIRMATION", "NO_ACTION_INSUFFICIENT_EVIDENCE"] },

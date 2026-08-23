@@ -4,6 +4,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
 import { faults, holdings, scenarios } from '../src/data/demoData.js';
+import { validateEvidenceBrief, validateRunContracts } from '../src/lib/contracts.js';
 import {
   applyFaultToScenario,
   getAgentRuntime,
@@ -46,6 +47,8 @@ test('canonical and fault-injected fixtures satisfy all JSON Schemas', () => {
   for (const scenario of scenarios) {
     for (const fault of faults) {
       const run = applyFaultToScenario(scenario, fault.id, `SCHEMA-${scenario.id}-${fault.id}`);
+      assert.equal(run.contractValidation.valid, true);
+      assert.equal(run.contractValidation.schemaVersion, '1.2');
       const event = Object.fromEntries(eventFields.map((field) => [field, run[field]]));
       assert.equal(validateEvent(event), true, JSON.stringify(validateEvent.errors));
       assert.equal(validateBrief(run.evidenceBriefs.news), true, JSON.stringify(validateBrief.errors));
@@ -138,7 +141,7 @@ test('A-share demo identifiers are fictional, schema-compatible, and weights tot
   }
 });
 
-test('every report action is non-execution and no target range survives in v1.1', () => {
+test('every report action is non-execution and no target range survives in v1.2', () => {
   const safeActions = new Set([
     'REVIEW_EVIDENCE',
     'WATCH_FOR_CONFIRMATION',
@@ -167,7 +170,8 @@ test('stale disclosure data is isolated instead of treated as current evidence',
 test('duplicate-source fault collapses repeated posts into one evidence cluster', () => {
   const run = applyFaultToScenario(scenarios[1], 'duplicate-source', 302);
   assert.equal(run.evidenceBriefs.news.status, 'DUPLICATE_CLUSTER_COLLAPSED');
-  assert.match(run.evidenceBriefs.news.findings.join(' '), /独立来源：1/);
+  assert.equal(run.evidenceBriefs.news.claims[0].state, 'CONFIRMED');
+  assert.match(run.evidenceBriefs.news.claims[0].rationale, /一个独立上游来源/);
   assert.match(run.recommendation, /同源转载/);
 });
 
@@ -175,7 +179,47 @@ test('contract failure rejects the source Patch and still produces a safe report
   const run = applyFaultToScenario(scenarios[0], 'contract-failure', 303);
   const ledger = getPatchLedger(run, 5, 'contract-failure');
   assert.equal(run.evidenceBriefs.news.status, 'CONTRACT_REJECTED');
+  assert.equal(run.contractAudit.accepted, false);
+  assert.ok(run.contractAudit.errors.some((error) => error.path.includes('/evidence/0')));
+  assert.equal(run.contractValidation.valid, true);
   assert.equal(ledger[0].status, 'REJECTED');
   assert.equal(run.userReport.action, 'WATCH_FOR_CONFIRMATION');
   assert.match(run.rationale, /安全边界/);
+});
+
+test('runtime validator rejects an EvidenceBrief with a missing locator', () => {
+  const invalidBrief = structuredClone(scenarios[0].evidenceBriefs.news);
+  delete invalidBrief.evidence[0].locator;
+  const result = validateEvidenceBrief(invalidBrief);
+
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.keyword === 'required'));
+});
+
+test('every claim references evidence in its own brief and is summarized in the report', () => {
+  for (const scenario of scenarios) {
+    const run = applyFaultToScenario(scenario, 'none', `CLAIMS-${scenario.id}`);
+    const claims = Object.values(run.evidenceBriefs).flatMap((brief) => brief.claims);
+    const summarized = run.userReport.factStateSummary;
+
+    assert.equal(summarized.confirmed, claims.filter((claim) => claim.state === 'CONFIRMED').length);
+    assert.equal(summarized.pendingVerification, claims.filter((claim) => claim.state === 'PENDING_VERIFICATION').length);
+    assert.equal(summarized.unknown, claims.filter((claim) => claim.state === 'UNKNOWN').length);
+    assert.equal(
+      run.synthesis.claimStates.confirmed.length
+        + run.synthesis.claimStates.pendingVerification.length
+        + run.synthesis.claimStates.unknown.length,
+      claims.length,
+    );
+  }
+});
+
+test('cross-contract validation catches a Supervisor that drops an unknown claim', () => {
+  const run = applyFaultToScenario(scenarios[0], 'none', 'DROPPED-CLAIM');
+  const tampered = structuredClone(run);
+  tampered.synthesis.claimStates.unknown = [];
+  const result = validateRunContracts(tampered);
+
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => error.keyword === 'claimStateLineage'));
 });

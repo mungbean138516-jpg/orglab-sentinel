@@ -16,7 +16,7 @@ High public-trend heat never overrides an A-level disclosure.
 
 ## Why only two specialist Agents
 
-MCP tools are connectors, not decision-making Agents. The public-trend Agent may call a trends tool; the disclosure Agent may call enterprise and official-disclosure tools. Both still emit the same `EvidenceBrief v1.1` contract.
+MCP tools are connectors, not decision-making Agents. The public-trend Agent may call a trends tool; the disclosure Agent may call enterprise and official-disclosure tools. Both still emit the same `EvidenceBrief v1.2` contract.
 
 ## Why a trusted backend is required
 
@@ -39,7 +39,7 @@ Every adapter should emit:
 - provider and source class;
 - publication time, event time, retrieval time and freshness;
 - original URL or disclosure number;
-- fact, inference and unknown fields;
+- claim state (`CONFIRMED`, `PENDING_VERIFICATION`, `UNKNOWN`), rationale and evidence references;
 - verification status and failure reason;
 - `data_mode` (`MOCK`, `LIVE_DELAYED`, `LIVE`);
 - a stable evidence ID and trace ID.

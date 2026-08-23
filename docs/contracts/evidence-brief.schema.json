@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://orglab.example/schemas/evidence-brief-v1.1.json",
-  "title": "OrgLab Sentinel EvidenceBrief v1.1",
+  "$id": "https://orglab.example/schemas/evidence-brief-v1.2.json",
+  "title": "OrgLab Sentinel EvidenceBrief v1.2",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -13,26 +13,60 @@
     "sourceClass",
     "asOf",
     "status",
-    "confidence",
+    "verificationCoverage",
     "headline",
     "summary",
-    "findings",
+    "claims",
     "evidence",
     "gaps"
   ],
   "properties": {
     "id": { "type": "string", "minLength": 1 },
-    "schemaVersion": { "const": "1.1" },
+    "schemaVersion": { "const": "1.2" },
     "agent": { "enum": ["news", "filing"] },
     "dataMode": { "enum": ["MOCK", "LIVE_DELAYED", "LIVE"] },
     "provider": { "type": "string", "minLength": 1 },
     "sourceClass": { "enum": ["exchange_announcement", "issuer_announcement", "corporate_registry", "licensed_news", "public_trend", "social", "mixed"] },
     "asOf": { "type": "string", "minLength": 1 },
-    "status": { "type": "string", "minLength": 1 },
-    "confidence": { "type": "number", "minimum": 0, "maximum": 100 },
+    "status": {
+      "enum": [
+        "DUPLICATE_AWARE_FIXTURE",
+        "PRIMARY_SOURCE_FIXTURE",
+        "PARTIALLY_VERIFIED_FIXTURE",
+        "UNVERIFIED_DUPLICATE_CLUSTER",
+        "NO_CORROBORATING_DISCLOSURE",
+        "SOURCE_TIMEOUT",
+        "STALE_SOURCE_FIXTURE",
+        "DUPLICATE_CLUSTER_COLLAPSED",
+        "CONFLICT_INJECTED_FIXTURE",
+        "CONTRACT_REJECTED"
+      ]
+    },
+    "verificationCoverage": { "type": "number", "minimum": 0, "maximum": 100 },
     "headline": { "type": "string", "minLength": 1 },
     "summary": { "type": "string", "minLength": 1 },
-    "findings": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "text", "state", "evidenceIds", "rationale"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "text": { "type": "string", "minLength": 1 },
+          "state": { "enum": ["CONFIRMED", "PENDING_VERIFICATION", "UNKNOWN"] },
+          "evidenceIds": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+          "rationale": { "type": "string", "minLength": 1 }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "state": { "enum": ["CONFIRMED", "PENDING_VERIFICATION"] } } },
+            "then": { "properties": { "evidenceIds": { "type": "array", "minItems": 1 } } }
+          }
+        ]
+      }
+    },
     "gaps": { "type": "array", "items": { "type": "string" } },
     "evidence": {
       "type": "array",
@@ -45,7 +79,7 @@
           "id": { "type": "string", "minLength": 1 },
           "label": { "type": "string", "minLength": 1 },
           "locator": { "type": "string", "minLength": 1 },
-          "tier": { "type": "string", "minLength": 1 },
+          "tier": { "enum": ["A 级官方", "A 级官方索引", "C 级媒体", "D 级线索", "系统事件"] },
           "verified": { "type": "boolean" },
           "freshness": { "type": "string", "minLength": 1 },
           "note": { "type": "string", "minLength": 1 }
