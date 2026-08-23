@@ -15,7 +15,7 @@
 L0 事件入口
    ↓
 L1 新闻／舆情 Agent ─┐
-                     ├→ L2 主管 Agent → L3 风险 Agent → 用户门禁
+                     ├→ L2 主管 Agent → L3 风险解释 Agent → 用户门禁
 L1 公告／数据 Agent ─┘
 ```
 
@@ -28,7 +28,7 @@ L1 公告／数据 Agent ─┘
 | L1 | 新闻／舆情 Agent | 新闻、公开讨论、热度线索、来源独立性 | `EvidenceBrief` | 修改公告事实、给交易建议 |
 | L1 | 公告／数据 Agent | 交易所公告、财务字段、企业主体信息 | `EvidenceBrief` | 推测舆论动机、形成最终结论 |
 | L2 | 主管 Agent | 一致点、冲突、未知项、证据覆盖 | `SupervisorSynthesis` | 自行抓取新证据、删除分歧 |
-| L3 | 风险 Agent | 把综合结果翻译成风险说明和核验清单 | `UserRiskReport` | 推荐目标仓位、连接券商、自动下单 |
+| L3 | 风险解释 Agent | 把综合结果翻译成风险说明和核验清单 | `UserRiskReport` | 推荐目标仓位、连接券商、自动下单 |
 
 L1 两个 Agent 可以逻辑并行，但不能互改对方的简报。主管必须等到两份简报都返回，或其中一份进入可见的降级状态后才能继续。
 
@@ -39,7 +39,7 @@ L1 两个 Agent 可以逻辑并行，但不能互改对方的简报。主管必�
 | 新闻／舆情 Agent | `/sources/news/*`、`/briefs/news/*` | `Event` |
 | 公告／数据 Agent | `/sources/disclosures/*`、`/briefs/data/*` | `Event` |
 | 主管 Agent | `/synthesis/*`、`/conflicts/*` | 两份 `EvidenceBrief` |
-| 风险 Agent | `/reports/risk/*`、`/governance/review/*` | `SupervisorSynthesis`、虚拟暴露快照 |
+| 风险解释 Agent | `/reports/risk/*`、`/governance/review/*` | `SupervisorSynthesis`、虚拟暴露快照 |
 
 这些边界当前由 UI、代码与合同表现；生产版本还需要后端身份、能力令牌与授权策略强制执行。
 
@@ -84,9 +84,9 @@ L1 两个 Agent 可以逻辑并行，但不能互改对方的简报。主管必�
 - `missing`：裁决冲突仍缺少的证据。
 - `decision`：升级关注、等待核验或隔离来源。
 
-### 风险 Agent
+### 风险解释 Agent
 
-风险 Agent 面向普通用户，重点展示：
+风险解释 Agent 面向普通用户，重点展示：
 
 - 发生了什么。
 - 哪些已经证实。

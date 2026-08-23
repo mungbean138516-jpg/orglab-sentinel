@@ -17,7 +17,7 @@
 
 ## 2. 一句话技术定位
 
-**百炼负责调度，通义千问负责各岗位的分析，MCP 负责连接外部数据，魔搭负责工具发现与评测，钉钉负责最终人工确认。**
+**百炼负责调度，通义千问负责各岗位的分析，MCP 负责连接外部数据，魔搭及 EvalScope 提供开源资源与评测支持，钉钉负责最终人工确认。**
 
 MCP 是大模型连接工具的标准协议，不是 Agent，也不是数据真实性证书。一个 MCP 服务能够被调用，不等于其数据已经通过金融合规或事实准确性认证。
 
@@ -42,7 +42,7 @@ flowchart TB
     DISC[公开披露适配器<br/>交易所 / 法定披露平台<br/>PLANNED]
     VAL[证据合同校验器<br/>实体 / 时间 / 来源 / 去重]
     DT[钉钉人工复核与通知<br/>PLANNED]
-    MS[ModelScope / EvalScope<br/>工具发现、测试集与评测<br/>PLANNED]
+    MS[ModelScope / EvalScope<br/>开源模型、数据集与评测<br/>PLANNED]
 
     U --> UI --> BL
     BL --> TA
@@ -85,11 +85,10 @@ flowchart TB
 - 将官方或自定义 MCP 接入智能体、工作流或 API 调用。
 - 负责流程，不替代数据服务商，也不自动证明数据可信。
 
-### ModelScope：开放工具与评测资产
+### ModelScope / EvalScope：开源资源与评测支持
 
-- MCP 广场用于发现、测试和 PoC 托管开源 MCP 服务。
-- `Hosted` 只说明服务通过了部署连接和 `list_tools` 等可用性检测；它不是数据质量认证。这是根据 ModelScope 部署检测规则作出的边界判断。
-- EvalScope 可保存固定测试集和重复评测配置。
+- ModelScope 可提供开源模型、数据集和开发资源。
+- EvalScope 可保存固定测试集和重复评测配置，用于验证幻觉、冲突保留和故障降级。
 - ModelScope 不是天眼查、微博、知乎或交易所数据的所有者。
 
 ### 钉钉：人工门禁
@@ -160,4 +159,3 @@ flowchart TB
 - [天眼查 MCP 接入指南](https://ai.tianyancha.com/guide)
 - [mcp-trends-hub npm 包](https://www.npmjs.com/package/mcp-trends-hub)
 - [mcp-trends-hub GitHub 仓库](https://github.com/baranwang/mcp-trends-hub)
-

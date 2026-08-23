@@ -127,7 +127,7 @@ ModelScope 免费 Hosted 资源适合体验，不适合需要 SLA 的生产系�
 - 每个逻辑 Agent 使用独立系统提示词和工具白名单；
 - 来源 Agent 不允许调用写操作；
 - 主管 Agent 不直接联网，只读取已校验 EvidenceBrief；
-- 风险 Agent 没有 MCP、券商或交易权限；
+- 风险解释 Agent 没有 MCP、券商或交易权限；
 - 工具返回值必须与控制指令隔离。
 
 ### ModelScope

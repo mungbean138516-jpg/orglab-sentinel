@@ -1,6 +1,6 @@
 {
   "name": "orglab-sentinel-prototype",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A-share mock-first multi-agent evidence verification and risk intelligence prototype.",
   "private": true,
   "type": "module",
@@ -28,13 +28,13 @@
     "check": "npm test && npm run build"
   },
   "dependencies": {
+    "ajv": "8.17.1",
     "lucide-react": "1.25.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "6.0.4",
-    "ajv": "8.17.1",
     "vite": "8.1.5"
   }
 }

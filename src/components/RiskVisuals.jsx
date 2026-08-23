@@ -120,19 +120,16 @@ export function ThresholdTrendChart({ trend }) {
 }
 
 export function EvidenceBalance({ scenario }) {
-  const allEvidence = Object.values(scenario.evidenceBriefs)
-    .flatMap((brief) => brief.evidence)
-    .filter((item) => item.tier !== '系统事件');
-  const verified = allEvidence.filter((item) => item.verified).length;
-  const unverified = allEvidence.length - verified;
-  const gaps = scenario.synthesis.missing.length;
+  const claims = Object.values(scenario.evidenceBriefs).flatMap((brief) => brief.claims);
+  const confirmed = claims.filter((claim) => claim.state === 'CONFIRMED').length;
+  const pending = claims.filter((claim) => claim.state === 'PENDING_VERIFICATION').length;
+  const unknown = claims.filter((claim) => claim.state === 'UNKNOWN').length;
   const conflicts = scenario.synthesis.conflicts.length;
-  const total = Math.max(verified + unverified + gaps + conflicts, 1);
+  const total = Math.max(confirmed + pending + unknown, 1);
   const items = [
-    { label: '已核验', value: verified, className: 'verified', icon: Check },
-    { label: '待核验', value: unverified, className: 'pending', icon: CircleHelp },
-    { label: '证据缺口', value: gaps, className: 'gap', icon: CircleHelp },
-    { label: '冲突', value: conflicts, className: 'conflict', icon: AlertTriangle },
+    { label: '已确认', value: confirmed, className: 'verified', icon: Check },
+    { label: '待核实', value: pending, className: 'pending', icon: CircleHelp },
+    { label: '暂无法判断', value: unknown, className: 'gap', icon: CircleHelp },
   ];
 
   return (
@@ -156,6 +153,11 @@ export function EvidenceBalance({ scenario }) {
           </div>
         ))}
       </div>
+      {conflicts > 0 && (
+        <div className="balance-conflict">
+          <AlertTriangle size={13} />另保留 {conflicts} 项来源冲突，不并入事实状态计算。
+        </div>
+      )}
     </div>
   );
 }
