@@ -1,0 +1,105 @@
+{
+  "condition": "evidence_aware",
+  "predictions": [
+    {
+      "id": "C01",
+      "label": "Contradicted",
+      "confidence": 0.98,
+      "citations": ["SAN-N", "SAN-P"],
+      "conflicts": [
+        {
+          "source_ids": ["SAN-N", "SAN-P"],
+          "summary": "媒体称记者以投资者身份致电证券部并获得回应，公司则称2025年10月15日未接受媒体采访，二者关于接触方式与采访认定的差异尚未厘清；媒体并未确认订单属实。"
+        }
+      ],
+      "unknowns": ["材料未提供6.85亿美元与约50亿元之间的换算依据。"],
+      "abstain": false,
+      "rationale": "在所给摘要范围内，10月16日刊登、10月15日署名的公司澄清公告明确否认机器人大额订单传闻，而较早的转载报道仅称传闻正在核实。"
+    },
+    {
+      "id": "C02",
+      "label": "Supported",
+      "confidence": 0.99,
+      "citations": ["SAN-P"],
+      "conflicts": [],
+      "unknowns": [],
+      "abstain": false,
+      "rationale": "上海证券报转载的三花智控澄清公告摘要明确记载，公司称机器人大额订单传闻不属实。"
+    },
+    {
+      "id": "C03",
+      "label": "Insufficient Evidence",
+      "confidence": 0.99,
+      "citations": ["SAN-N", "SAN-P"],
+      "conflicts": [],
+      "unknowns": ["三花智控2025年机器人业务全年营业收入及其披露依据。"],
+      "abstain": true,
+      "rationale": "材料仅涉及2025年10月的订单传闻及澄清，未披露机器人业务全年营收，订单传闻金额也不能确定全年营收。"
+    },
+    {
+      "id": "C04",
+      "label": "Contradicted",
+      "confidence": 0.98,
+      "citations": ["ZHE-N", "ZHE-P"],
+      "conflicts": [
+        {
+          "source_ids": ["ZHE-N", "ZHE-P"],
+          "summary": "2月5日转载的博望财经评论声称浙江东方通过旗下基金参与DeepSeek天使轮投资，2月6日披露的公司公告则称截至披露日公司及所管理基金均未直接或间接投资DeepSeek。"
+        }
+      ],
+      "unknowns": ["评论所称投资的原始投资文件未提供，无法据此独立核验。"],
+      "abstain": false,
+      "rationale": "就所给摘要中的公司自身投资披露而言，2月6日公告明确否认截至该日直接或间接投资DeepSeek，优先于缺少原始投资文件的前一天媒体评论。"
+    },
+    {
+      "id": "C05",
+      "label": "Supported",
+      "confidence": 0.99,
+      "citations": ["ZHE-P"],
+      "conflicts": [],
+      "unknowns": ["2024年归母净利润最终经审计金额。"],
+      "abstain": false,
+      "rationale": "公司公告摘要给出的2024年归母净利润业绩预告为9.47亿元，同时说明该金额属于未经审计的初步测算。"
+    },
+    {
+      "id": "C06",
+      "label": "Insufficient Evidence",
+      "confidence": 0.99,
+      "citations": ["ZHE-P"],
+      "conflicts": [],
+      "unknowns": ["相关基金对北京深度搜索科技有限公司的准确持股比例。"],
+      "abstain": true,
+      "rationale": "公告摘要虽提及相关基金投资北京深度搜索，但所引段落未披露持股比例，因此既不能确认40%也不能将未披露视为否认。"
+    },
+    {
+      "id": "C07",
+      "label": "Supported",
+      "confidence": 0.99,
+      "citations": ["BYD-P", "BYD-N"],
+      "conflicts": [],
+      "unknowns": [],
+      "abstain": false,
+      "rationale": "公司2024年年报摘要的营业收入777,102,455,000元换算后约为7771.02亿元，与第一财经报道的同年数值一致。"
+    },
+    {
+      "id": "C08",
+      "label": "Contradicted",
+      "confidence": 0.99,
+      "citations": ["BYD-P", "BYD-N"],
+      "conflicts": [],
+      "unknowns": [],
+      "abstain": false,
+      "rationale": "公司年报摘要明确记载2024年经营活动现金流量净额同比下降21.37%，媒体报道的下降超过20%与此一致，均反驳增长的表述。"
+    },
+    {
+      "id": "C09",
+      "label": "Insufficient Evidence",
+      "confidence": 0.99,
+      "citations": ["BYD-P", "BYD-N"],
+      "conflicts": [],
+      "unknowns": ["比亚迪2025年归母净利润及同比增速，或覆盖2025年的相关预测证据。"],
+      "abstain": true,
+      "rationale": "34%的归母净利润增幅对应2024年，材料未提供2025年利润增速预测或结果，不能据此确认下一年仍增长34%。"
+    }
+  ]
+}

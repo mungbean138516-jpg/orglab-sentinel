@@ -1,0 +1,757 @@
+{
+  "experiment_id": "orglab-public-data-pilot-20260923",
+  "reference_status": "provisional assistant labels; human review pending",
+  "load_errors": {},
+  "conditions": {
+    "single_source": {
+      "planned_cases": 9,
+      "valid_cases": 9,
+      "missing_or_invalid_ids": [],
+      "validation_errors": [],
+      "macro_f1_full_packet": {
+        "value": 0.5222222222222223,
+        "per_class": {
+          "Supported": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 2,
+            "f1": 0.4
+          },
+          "Contradicted": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 2,
+            "f1": 0.5
+          },
+          "Insufficient Evidence": {
+            "tp": 3,
+            "fp": 3,
+            "fn": 0,
+            "f1": 0.6666666666666666
+          }
+        }
+      },
+      "macro_f1_condition_specific": {
+        "value": 1.0,
+        "per_class": {
+          "Supported": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "Contradicted": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "Insufficient Evidence": {
+            "tp": 6,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          }
+        }
+      },
+      "conflict_recall": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null
+      },
+      "citation_coverage": {
+        "numerator": 8,
+        "denominator": 9,
+        "value": 0.8888888888888888
+      },
+      "citation_id_validity": {
+        "numerator": 8,
+        "denominator": 8,
+        "value": 1.0
+      },
+      "abstention_accuracy": {
+        "numerator": 9,
+        "denominator": 9,
+        "value": 1.0
+      },
+      "abstention_rate": {
+        "numerator": 6,
+        "denominator": 9,
+        "value": 0.6666666666666666
+      },
+      "abstention_precision": {
+        "numerator": 6,
+        "denominator": 6,
+        "value": 1.0
+      }
+    },
+    "multi_source": {
+      "planned_cases": 9,
+      "valid_cases": 9,
+      "missing_or_invalid_ids": [],
+      "validation_errors": [],
+      "macro_f1_full_packet": {
+        "value": 1.0,
+        "per_class": {
+          "Supported": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "Contradicted": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "Insufficient Evidence": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          }
+        }
+      },
+      "macro_f1_condition_specific": {
+        "value": 1.0,
+        "per_class": {
+          "Supported": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "Contradicted": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "Insufficient Evidence": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          }
+        }
+      },
+      "conflict_recall": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "citation_coverage": {
+        "numerator": 9,
+        "denominator": 9,
+        "value": 1.0
+      },
+      "citation_id_validity": {
+        "numerator": 15,
+        "denominator": 15,
+        "value": 1.0
+      },
+      "abstention_accuracy": {
+        "numerator": 9,
+        "denominator": 9,
+        "value": 1.0
+      },
+      "abstention_rate": {
+        "numerator": 3,
+        "denominator": 9,
+        "value": 0.3333333333333333
+      },
+      "abstention_precision": {
+        "numerator": 3,
+        "denominator": 3,
+        "value": 1.0
+      }
+    },
+    "evidence_aware": {
+      "planned_cases": 9,
+      "valid_cases": 9,
+      "missing_or_invalid_ids": [],
+      "validation_errors": [],
+      "macro_f1_full_packet": {
+        "value": 1.0,
+        "per_class": {
+          "Supported": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "Contradicted": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "Insufficient Evidence": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          }
+        }
+      },
+      "macro_f1_condition_specific": {
+        "value": 1.0,
+        "per_class": {
+          "Supported": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "Contradicted": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          },
+          "Insufficient Evidence": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "f1": 1.0
+          }
+        }
+      },
+      "conflict_recall": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0
+      },
+      "citation_coverage": {
+        "numerator": 9,
+        "denominator": 9,
+        "value": 1.0
+      },
+      "citation_id_validity": {
+        "numerator": 15,
+        "denominator": 15,
+        "value": 1.0
+      },
+      "abstention_accuracy": {
+        "numerator": 9,
+        "denominator": 9,
+        "value": 1.0
+      },
+      "abstention_rate": {
+        "numerator": 3,
+        "denominator": 9,
+        "value": 0.3333333333333333
+      },
+      "abstention_precision": {
+        "numerator": 3,
+        "denominator": 3,
+        "value": 1.0
+      }
+    }
+  },
+  "pairwise_label_disagreement": {
+    "single_source__multi_source": {
+      "numerator": 4,
+      "denominator": 9,
+      "value": 0.4444444444444444,
+      "case_ids": [
+        "C01",
+        "C02",
+        "C04",
+        "C05"
+      ],
+      "excluded_incomplete_cases": 0
+    },
+    "single_source__evidence_aware": {
+      "numerator": 4,
+      "denominator": 9,
+      "value": 0.4444444444444444,
+      "case_ids": [
+        "C01",
+        "C02",
+        "C04",
+        "C05"
+      ],
+      "excluded_incomplete_cases": 0
+    },
+    "multi_source__evidence_aware": {
+      "numerator": 0,
+      "denominator": 9,
+      "value": 0.0,
+      "case_ids": [],
+      "excluded_incomplete_cases": 0
+    }
+  },
+  "any_label_disagreement": {
+    "numerator": 4,
+    "denominator": 9,
+    "value": 0.4444444444444444,
+    "case_ids": [
+      "C01",
+      "C02",
+      "C04",
+      "C05"
+    ]
+  },
+  "case_results": [
+    {
+      "id": "C01",
+      "claim": "三花智控已经获得特斯拉约50亿元的人形机器人执行器订单。",
+      "gold_full_packet": "Contradicted",
+      "predictions": {
+        "single_source": {
+          "id": "C01",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [
+            "SAN-N"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "订单传闻是否属实",
+            "实际订单金额及人民币折算金额"
+          ],
+          "abstain": true,
+          "rationale": "材料仅记载6.85亿美元订单传闻及公司正在核实的回应，未确认已经获得约50亿元订单。"
+        },
+        "multi_source": {
+          "id": "C01",
+          "label": "Contradicted",
+          "confidence": 0.98,
+          "citations": [
+            "SAN-N",
+            "SAN-P"
+          ],
+          "conflicts": [],
+          "unknowns": [],
+          "abstain": false,
+          "rationale": "报道仅转述未核实的订单传闻，随后公司公告明确称机器人大额订单传闻不属实。"
+        },
+        "evidence_aware": {
+          "id": "C01",
+          "label": "Contradicted",
+          "confidence": 0.98,
+          "citations": [
+            "SAN-N",
+            "SAN-P"
+          ],
+          "conflicts": [
+            {
+              "source_ids": [
+                "SAN-N",
+                "SAN-P"
+              ],
+              "summary": "媒体称记者以投资者身份致电证券部并获得回应，公司则称2025年10月15日未接受媒体采访，二者关于接触方式与采访认定的差异尚未厘清；媒体并未确认订单属实。"
+            }
+          ],
+          "unknowns": [
+            "材料未提供6.85亿美元与约50亿元之间的换算依据。"
+          ],
+          "abstain": false,
+          "rationale": "在所给摘要范围内，10月16日刊登、10月15日署名的公司澄清公告明确否认机器人大额订单传闻，而较早的转载报道仅称传闻正在核实。"
+        }
+      }
+    },
+    {
+      "id": "C02",
+      "claim": "三花智控发布的澄清公告否认了机器人大额订单传闻。",
+      "gold_full_packet": "Supported",
+      "predictions": {
+        "single_source": {
+          "id": "C02",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [
+            "SAN-N"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "是否发布了澄清公告",
+            "澄清公告是否否认该订单传闻"
+          ],
+          "abstain": true,
+          "rationale": "材料提供的是证券部正在核实传闻的电话回应，没有提供澄清公告或明确否认订单的内容。"
+        },
+        "multi_source": {
+          "id": "C02",
+          "label": "Supported",
+          "confidence": 0.99,
+          "citations": [
+            "SAN-P"
+          ],
+          "conflicts": [],
+          "unknowns": [],
+          "abstain": false,
+          "rationale": "公司澄清公告明确否认了网络流传的机器人大额订单传闻。"
+        },
+        "evidence_aware": {
+          "id": "C02",
+          "label": "Supported",
+          "confidence": 0.99,
+          "citations": [
+            "SAN-P"
+          ],
+          "conflicts": [],
+          "unknowns": [],
+          "abstain": false,
+          "rationale": "上海证券报转载的三花智控澄清公告摘要明确记载，公司称机器人大额订单传闻不属实。"
+        }
+      }
+    },
+    {
+      "id": "C03",
+      "claim": "现有材料能够确定三花智控2025年机器人业务全年营收为50亿元。",
+      "gold_full_packet": "Insufficient Evidence",
+      "predictions": {
+        "single_source": {
+          "id": "C03",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [
+            "SAN-N"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "三花智控2025年机器人业务全年营收"
+          ],
+          "abstain": true,
+          "rationale": "未获确认的订单传闻不能确定2025年机器人业务全年营收，材料也未提供该年度业务营收数据。"
+        },
+        "multi_source": {
+          "id": "C03",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [
+            "SAN-N",
+            "SAN-P"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "三花智控2025年机器人业务全年营收"
+          ],
+          "abstain": true,
+          "rationale": "材料讨论的是订单传闻及其澄清，没有提供三花智控2025年机器人业务全年营收数据。"
+        },
+        "evidence_aware": {
+          "id": "C03",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [
+            "SAN-N",
+            "SAN-P"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "三花智控2025年机器人业务全年营业收入及其披露依据。"
+          ],
+          "abstain": true,
+          "rationale": "材料仅涉及2025年10月的订单传闻及澄清，未披露机器人业务全年营收，订单传闻金额也不能确定全年营收。"
+        }
+      }
+    },
+    {
+      "id": "C04",
+      "claim": "截至2025年2月6日，浙江东方及其管理基金已经直接或间接投资了深度求索（DeepSeek）。",
+      "gold_full_packet": "Contradicted",
+      "predictions": {
+        "single_source": {
+          "id": "C04",
+          "label": "Supported",
+          "confidence": 0.95,
+          "citations": [
+            "ZHE-N"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "所称投资的原始投资文件未提供"
+          ],
+          "abstain": false,
+          "rationale": "2025年2月5日的评论明确声称浙江东方通过旗下基金参与DeepSeek天使轮投资，因此给定材料支持截至2月6日已直接或间接投资的陈述。"
+        },
+        "multi_source": {
+          "id": "C04",
+          "label": "Contradicted",
+          "confidence": 0.98,
+          "citations": [
+            "ZHE-N",
+            "ZHE-P"
+          ],
+          "conflicts": [
+            {
+              "source_ids": [
+                "ZHE-N",
+                "ZHE-P"
+              ],
+              "summary": "媒体评论声称浙江东方通过旗下基金参与DeepSeek天使轮投资，公司随后公告则明确表示截至披露日公司及其管理基金均未直接或间接投资DeepSeek。"
+            }
+          ],
+          "unknowns": [],
+          "abstain": false,
+          "rationale": "尽管媒体评论声称存在投资，2025年2月6日公司公告明确否认公司及其管理基金截至披露日直接或间接投资DeepSeek。"
+        },
+        "evidence_aware": {
+          "id": "C04",
+          "label": "Contradicted",
+          "confidence": 0.98,
+          "citations": [
+            "ZHE-N",
+            "ZHE-P"
+          ],
+          "conflicts": [
+            {
+              "source_ids": [
+                "ZHE-N",
+                "ZHE-P"
+              ],
+              "summary": "2月5日转载的博望财经评论声称浙江东方通过旗下基金参与DeepSeek天使轮投资，2月6日披露的公司公告则称截至披露日公司及所管理基金均未直接或间接投资DeepSeek。"
+            }
+          ],
+          "unknowns": [
+            "评论所称投资的原始投资文件未提供，无法据此独立核验。"
+          ],
+          "abstain": false,
+          "rationale": "就所给摘要中的公司自身投资披露而言，2月6日公告明确否认截至该日直接或间接投资DeepSeek，优先于缺少原始投资文件的前一天媒体评论。"
+        }
+      }
+    },
+    {
+      "id": "C05",
+      "claim": "浙江东方2024年归母净利润业绩预告为9.47亿元。",
+      "gold_full_packet": "Supported",
+      "predictions": {
+        "single_source": {
+          "id": "C05",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [],
+          "conflicts": [],
+          "unknowns": [
+            "浙江东方2024年归母净利润业绩预告金额"
+          ],
+          "abstain": true,
+          "rationale": "材料没有提供浙江东方2024年归母净利润业绩预告，无法判断9.47亿元这一金额。"
+        },
+        "multi_source": {
+          "id": "C05",
+          "label": "Supported",
+          "confidence": 0.99,
+          "citations": [
+            "ZHE-P"
+          ],
+          "conflicts": [],
+          "unknowns": [],
+          "abstain": false,
+          "rationale": "公司公告所述2024年归母净利润业绩预告为9.47亿元，并注明该数值属于未经审计的初步测算。"
+        },
+        "evidence_aware": {
+          "id": "C05",
+          "label": "Supported",
+          "confidence": 0.99,
+          "citations": [
+            "ZHE-P"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "2024年归母净利润最终经审计金额。"
+          ],
+          "abstain": false,
+          "rationale": "公司公告摘要给出的2024年归母净利润业绩预告为9.47亿元，同时说明该金额属于未经审计的初步测算。"
+        }
+      }
+    },
+    {
+      "id": "C06",
+      "claim": "浙江东方相关基金对北京深度搜索科技有限公司的准确持股比例为40%。",
+      "gold_full_packet": "Insufficient Evidence",
+      "predictions": {
+        "single_source": {
+          "id": "C06",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [
+            "ZHE-N"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "北京深度搜索科技有限公司与材料所述DeepSeek的关系",
+            "相关基金对北京深度搜索科技有限公司的实际持股比例"
+          ],
+          "abstain": true,
+          "rationale": "材料只提及对DeepSeek的投资声称，未说明北京深度搜索科技有限公司这一主体及相关基金的准确持股比例。"
+        },
+        "multi_source": {
+          "id": "C06",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [
+            "ZHE-P"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "浙江东方相关基金对北京深度搜索科技有限公司的准确持股比例"
+          ],
+          "abstain": true,
+          "rationale": "公告摘要提及相关基金投资北京深度搜索科技有限公司，但未披露持股比例，无法确定是否为40%。"
+        },
+        "evidence_aware": {
+          "id": "C06",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [
+            "ZHE-P"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "相关基金对北京深度搜索科技有限公司的准确持股比例。"
+          ],
+          "abstain": true,
+          "rationale": "公告摘要虽提及相关基金投资北京深度搜索，但所引段落未披露持股比例，因此既不能确认40%也不能将未披露视为否认。"
+        }
+      }
+    },
+    {
+      "id": "C07",
+      "claim": "比亚迪2024年营业收入约为7771.02亿元。",
+      "gold_full_packet": "Supported",
+      "predictions": {
+        "single_source": {
+          "id": "C07",
+          "label": "Supported",
+          "confidence": 0.99,
+          "citations": [
+            "BYD-N"
+          ],
+          "conflicts": [],
+          "unknowns": [],
+          "abstain": false,
+          "rationale": "材料明确给出比亚迪2024年营收为7771.02亿元，与陈述一致。"
+        },
+        "multi_source": {
+          "id": "C07",
+          "label": "Supported",
+          "confidence": 0.99,
+          "citations": [
+            "BYD-N",
+            "BYD-P"
+          ],
+          "conflicts": [],
+          "unknowns": [],
+          "abstain": false,
+          "rationale": "年报摘要的2024年营业收入777,102,455,000元折合约7771.02亿元，与报道数据一致。"
+        },
+        "evidence_aware": {
+          "id": "C07",
+          "label": "Supported",
+          "confidence": 0.99,
+          "citations": [
+            "BYD-P",
+            "BYD-N"
+          ],
+          "conflicts": [],
+          "unknowns": [],
+          "abstain": false,
+          "rationale": "公司2024年年报摘要的营业收入777,102,455,000元换算后约为7771.02亿元，与第一财经报道的同年数值一致。"
+        }
+      }
+    },
+    {
+      "id": "C08",
+      "claim": "比亚迪2024年经营活动现金流量净额同比增长21.37%。",
+      "gold_full_packet": "Contradicted",
+      "predictions": {
+        "single_source": {
+          "id": "C08",
+          "label": "Contradicted",
+          "confidence": 0.99,
+          "citations": [
+            "BYD-N"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "经营活动现金流量净额同比下降的准确百分比"
+          ],
+          "abstain": false,
+          "rationale": "材料明确说明比亚迪2024年经营活动现金流量净额同比下降超过20%，反驳了同比增长21.37%的陈述。"
+        },
+        "multi_source": {
+          "id": "C08",
+          "label": "Contradicted",
+          "confidence": 0.99,
+          "citations": [
+            "BYD-N",
+            "BYD-P"
+          ],
+          "conflicts": [],
+          "unknowns": [],
+          "abstain": false,
+          "rationale": "年报摘要明确记载2024年经营活动现金流量净额同比下降21.37%，报道也称下降超过20%。"
+        },
+        "evidence_aware": {
+          "id": "C08",
+          "label": "Contradicted",
+          "confidence": 0.99,
+          "citations": [
+            "BYD-P",
+            "BYD-N"
+          ],
+          "conflicts": [],
+          "unknowns": [],
+          "abstain": false,
+          "rationale": "公司年报摘要明确记载2024年经营活动现金流量净额同比下降21.37%，媒体报道的下降超过20%与此一致，均反驳增长的表述。"
+        }
+      }
+    },
+    {
+      "id": "C09",
+      "claim": "根据现有材料，可以确认比亚迪2025年归母净利润仍将同比增长34%。",
+      "gold_full_packet": "Insufficient Evidence",
+      "predictions": {
+        "single_source": {
+          "id": "C09",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [
+            "BYD-N"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "比亚迪2025年归母净利润及其同比增长率"
+          ],
+          "abstain": true,
+          "rationale": "材料中的34%是2024年归母净利润同比增长率，没有提供足以确认2025年仍增长34%的证据。"
+        },
+        "multi_source": {
+          "id": "C09",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [
+            "BYD-N",
+            "BYD-P"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "比亚迪2025年归母净利润同比增长率"
+          ],
+          "abstain": true,
+          "rationale": "材料中的34%是2024年归母净利润同比增幅，未提供能够确认2025年仍有相同增幅的证据。"
+        },
+        "evidence_aware": {
+          "id": "C09",
+          "label": "Insufficient Evidence",
+          "confidence": 0.99,
+          "citations": [
+            "BYD-P",
+            "BYD-N"
+          ],
+          "conflicts": [],
+          "unknowns": [
+            "比亚迪2025年归母净利润及同比增速，或覆盖2025年的相关预测证据。"
+          ],
+          "abstain": true,
+          "rationale": "34%的归母净利润增幅对应2024年，材料未提供2025年利润增速预测或结果，不能据此确认下一年仍增长34%。"
+        }
+      }
+    }
+  ]
+}
