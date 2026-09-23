@@ -1,0 +1,131 @@
+{
+  "status": "proposal_only_not_run_not_human_validated",
+  "based_on_commit": "be05b50ef15dd18057b87105107c49485ffd9c62",
+  "reviewer_type": "same_assistant_source_audit_not_independent_human_review",
+  "new_prediction_batches": 0,
+  "material_cutoff_by_cluster": {
+    "SAN": "2025-10-16",
+    "ZHE": "2025-02-06 announcement disclosure",
+    "BYD": "2025-03-25"
+  },
+  "shared_task_rule_proposal": "判断给定材料内的证据支持关系，不声称独立证明现实真相。针对公司自身披露事项，有直接相关正式公司公告时按其核验，并保留相反报道；所有条件均使用这一规则。Supported不表示事实已获独立证实。缺少对应事项证据时用Insufficient Evidence，不因未提及而认定Contradicted。",
+  "claims": [
+    {
+      "case_id": "C01",
+      "proposed_claim": "截至2025年10月16日，三花智控已经获得特斯拉价值6.85亿美元的人形机器人执行器订单。",
+      "proposed_reference_label": "Contradicted",
+      "change_note": "恢复报道原币种；明确截止日和同一传闻的对应关系，后者待人工复核。",
+      "human_label": null,
+      "human_reviewer": null,
+      "human_review_date": null
+    },
+    {
+      "case_id": "C02",
+      "proposed_claim": "三花智控发布的澄清公告否认了机器人大额订单传闻。",
+      "proposed_reference_label": "Supported",
+      "change_note": "题目暂不改；仍待人工逐条判断。",
+      "human_label": null,
+      "human_reviewer": null,
+      "human_review_date": null
+    },
+    {
+      "case_id": "C03",
+      "proposed_claim": "三花智控2025年机器人业务全年营业收入为50亿元。",
+      "proposed_reference_label": "Insufficient Evidence",
+      "change_note": "直接事实命题；按截至2025-10-16给定材料评估，去掉能够确定的元判断。",
+      "human_label": null,
+      "human_reviewer": null,
+      "human_review_date": null
+    },
+    {
+      "case_id": "C04",
+      "proposed_claim": "截至2025年2月6日该公司公告披露时，浙江东方与其基金板块管理的相关私募基金中，至少有一方直接或间接投资了杭州深度求索人工智能基础技术研究有限公司。",
+      "proposed_reference_label": "Contradicted",
+      "change_note": "明确主体、公告时点和至少一方的量词；共同采用披露优先的有限核验规则。",
+      "human_label": null,
+      "human_reviewer": null,
+      "human_review_date": null
+    },
+    {
+      "case_id": "C05",
+      "proposed_claim": "浙江东方2024年归母净利润业绩预告为9.47亿元。",
+      "proposed_reference_label": "Supported",
+      "change_note": "题目暂不改；仍待人工逐条判断。",
+      "human_label": null,
+      "human_reviewer": null,
+      "human_review_date": null
+    },
+    {
+      "case_id": "C06",
+      "proposed_claim": "截至2025年2月6日，浙江东方基金板块对北京深度搜索科技有限公司的合计持股比例为40%。",
+      "proposed_reference_label": "Insufficient Evidence",
+      "change_note": "明确合计口径；40%是构造数字，给定公告没有该比例，不是声称真实比例。",
+      "human_label": null,
+      "human_reviewer": null,
+      "human_review_date": null
+    },
+    {
+      "case_id": "C07",
+      "proposed_claim": "比亚迪2024年营业收入约为7771.02亿元。",
+      "proposed_reference_label": "Supported",
+      "change_note": "题目暂不改；仍待人工逐条判断。",
+      "human_label": null,
+      "human_reviewer": null,
+      "human_review_date": null
+    },
+    {
+      "case_id": "C08",
+      "proposed_claim": "比亚迪2024年经营活动现金流量净额同比增长21.37%。",
+      "proposed_reference_label": "Contradicted",
+      "change_note": "题目暂不改；仍待人工逐条判断。",
+      "human_label": null,
+      "human_reviewer": null,
+      "human_review_date": null
+    },
+    {
+      "case_id": "C09",
+      "proposed_claim": "比亚迪2025年归属于上市公司股东的净利润同比增长34%。",
+      "proposed_reference_label": "Insufficient Evidence",
+      "change_note": "直接事实命题；只允许2025-03-25及以前的给定材料，去掉可以确认的元判断。",
+      "human_label": null,
+      "human_reviewer": null,
+      "human_review_date": null
+    }
+  ],
+  "source_summary_proposals": {
+    "ZHE-N": "2025年2月5日的财经评论称，浙江东方通过旗下杭州东方嘉富基金参与了DeepSeek天使轮投资。",
+    "ZHE-P": "截至2025年2月6日公告披露时，浙江东方及其基金板块管理的相关私募基金未直接或间接投资杭州深度求索人工智能基础技术研究有限公司。公告区分基金板块投资的北京深度搜索、北京九章云极等主体与深度求索及关联企业，称没有股权投资关系。公告回顾2024年归母净利润预计9.47亿元，属于初步测算，具体财务数据以之后年度报告为准。",
+    "BYD-N": "报道给出比亚迪2024年营业收入7771.02亿元、净利润402.54亿元，净利润同比增长34%；经营活动产生的现金流量净额同比下降超过20%。",
+    "BYD-P": "2024年营业收入777,102,455,000元；归属于上市公司股东的净利润40,254,346,000元，同比增加34.00%；经营活动产生的现金流量净额133,453,873,000元，2023年为169,725,025,000元，同比变动−21.37%。"
+  },
+  "source_locator_proposal": {
+    "ZHE-N": "浙江东方章节，投资布局与DeepSeek的资本纽带；原站章节编号待复核"
+  },
+  "source_access_review": {
+    "direct_original_urls_reopened": [
+      "SAN-P",
+      "ZHE-P",
+      "BYD-N",
+      "BYD-P"
+    ],
+    "original_urls_not_reopened": [
+      "SAN-N",
+      "ZHE-N"
+    ],
+    "auxiliary_urls": [
+      {
+        "source_id": "SAN-N",
+        "url": "https://www.yicai.com/brief/102864170.html",
+        "note": "据21财经的转述，页面有AI生成免责声明；不视为独立证据。"
+      },
+      {
+        "source_id": "ZHE-N",
+        "url": "https://www.laohu8.com/m/post/400261677977968",
+        "note": "同标题、署名恒心、来源博望财经；原站本轮无法重开，不假定排版编号一致。"
+      }
+    ]
+  },
+  "human_review_status": "pending_for_all_nine",
+  "next_dataset_size_target": 30,
+  "expansion_executed": false
+}
