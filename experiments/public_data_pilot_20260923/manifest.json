@@ -1,0 +1,41 @@
+{
+  "experiment_id": "orglab-public-data-pilot-20260923",
+  "run_date": "2026-09-23",
+  "base_commit": "ae7fa6c34ea2573dfc16ca718ce5dc70f4a4e63a",
+  "conditions": [
+    "single_source",
+    "multi_source",
+    "evidence_aware"
+  ],
+  "cases": 9,
+  "batches_planned": 3,
+  "repeats_per_condition": 1,
+  "paid_api_calls_planned": 0,
+  "execution": "three fresh Codex conversational agent contexts, no conversation history fork; each receives one nine-case packet",
+  "isolation": "instruction-based in shared filesystem, not a security boundary",
+  "model": {
+    "provider": "OpenAI via ChatGPT Work / Codex",
+    "family": "GPT-based Codex assistant",
+    "exact_model_snapshot": null,
+    "temperature": null,
+    "top_p": null,
+    "seed": null,
+    "max_output_tokens": null,
+    "reasoning_effort": null,
+    "note": "Inherited runtime settings; not exposed or independently set. Not Qwen. No exact snapshot claimed."
+  },
+  "resource_accounting": {
+    "exact_input_tokens": null,
+    "exact_output_tokens": null,
+    "remaining_account_quota": null,
+    "note": "Not exposed by experiment interface. ChatGPT usage still consumes account allowance; no claim of zero total cost."
+  },
+  "pre_run_sha256": {
+    "annotations.json": "748d903682d2dfe74f332c2fc29562aa6ab07cea4bee1afac024d4d883c6a06e",
+    "inputs/evidence_aware.json": "216314ef85424c1b79cda74e96f90db737f192177d6b35921d89ed283a537e98",
+    "inputs/multi_source.json": "bfc1739a3f828f700bc862b4ae43407ad62d141a435a3e37ff9a16ce584c7ca9",
+    "inputs/single_source.json": "a3f5b7beef019e3084f6afb7c23c6aeb64fb2b515211d261ff0af4b6ae8c67da",
+    "sources.json": "dd4076199b2be05cc0096d878cb086b16e9848e8e5c26b0b01cd1f8aeaca46f0",
+    "PROTOCOL.md": "cea910c598c7e43b89f7fdaa7a014c306dd206d55f86939b67fd830fee524632"
+  }
+}
