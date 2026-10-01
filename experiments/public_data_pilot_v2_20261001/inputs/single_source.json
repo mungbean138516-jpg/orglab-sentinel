@@ -1,0 +1,120 @@
+{
+  "dataset_version": "v2-20261001-candidate",
+  "condition": "single_source",
+  "material_cutoff_by_cluster": {
+    "SAN": "2025-10-16",
+    "ZHE": "2025-02-06",
+    "BYD": "2025-03-25"
+  },
+  "instructions": "你正在参加封闭材料核验试跑。只依据本输入包的证据摘要逐条判断；不联网，不用既有知识补事实，不读取其他实验文件。材料截止日：SAN 2025-10-16，ZHE 2025-02-06，BYD 2025-03-25。Supported表示给定材料支持，Contradicted表示给定材料明确反驳，Insufficient Evidence表示不足以判断；不声称独立证明现实真相。针对公司自身披露事项，有直接相关正式公司公告时按其核验并保留相反报道；这条规则对所有条件相同。未提及不等于明确否认。对不同来源是否谈论同一事项，若材料不足，请保留unknown，不自行补足对应关系。一次完成全部9条，以JSON返回condition和predictions。每条含id、label、confidence、citations、conflicts、unknowns、abstain、rationale。confidence为0到1的主观标签确信度，不是校准概率；citations只能使用本包source id；conflicts为含source_ids(两个不同id)和summary的对象数组；unknowns为字符串数组。Insufficient Evidence对应abstain=true，其他标签为false；rationale用一句中文；空项用空数组。",
+  "sources": [
+    {
+      "id": "SAN-N",
+      "cluster": "SAN",
+      "kind": "news_report",
+      "publisher": "每日经济新闻",
+      "original_publisher": "21财经",
+      "published_at": "2025-10-15T15:05:38+08:00",
+      "url": "https://www.nbd.com.cn/articles/2025-10-15/4091767.html",
+      "title": "一则天价订单传闻股价直线涨停 三花智控回应：正在紧急核查",
+      "locator": "正文关于订单传闻及证券部回应的段落",
+      "summary": "报道转述市场传闻：特斯拉向三花智控下达价值6.85亿美元的Optimus线性执行器订单。记者以投资者身份致电证券部，工作人员称正在紧急核实；合作具体细节因保密协议无法披露。",
+      "retrieved_on": "2026-09-23",
+      "representation": "assistant-authored factual paraphrase; not a verbatim document or full-text corpus",
+      "reviewed_on": "2026-10-01",
+      "reviewer_type": "AI-assisted source audit; no independent human validation",
+      "current_access": "original URL fetched directly on this Mac on 2026-10-01 after an initial browser-reader failure; prior independent AI browser review also opened it earlier that day",
+      "original_locator_verified_20261001": true,
+      "verification": "AI-assisted direct original-page check on 2026-10-01; independent human review pending",
+      "accessible_same_source_reproduction_url": "https://www.yicai.com/brief/102864170.html",
+      "original_publish_time_reconfirmed_20261001": true
+    },
+    {
+      "id": "ZHE-N",
+      "cluster": "ZHE",
+      "kind": "news_commentary",
+      "publisher": "证券之星",
+      "original_publisher": "博望财经",
+      "published_at": "2025-02-05T14:26:55+08:00",
+      "url": "https://wap.stockstar.com/detail/IG2025020500015469",
+      "title": "【寻龙探金】DeepSeek强势崛起，这五家概念股公司潜力巨大！",
+      "locator": "02 浙江东方，投资布局与DeepSeek的资本纽带",
+      "summary": "2025年2月5日的财经评论声称，浙江东方通过旗下杭州东方嘉富基金参与DeepSeek天使轮投资。",
+      "retrieved_on": "2026-09-23",
+      "representation": "assistant-authored factual paraphrase; not a verbatim document or full-text corpus",
+      "reviewed_on": "2026-10-01",
+      "reviewer_type": "AI-assisted source audit; no independent human validation",
+      "current_access": "original URL fetched directly on this Mac on 2026-10-01 after an initial browser-reader failure; prior independent AI browser review also opened it earlier that day",
+      "original_locator_verified_20261001": true,
+      "verification": "AI-assisted direct original-page check on 2026-10-01; independent human review pending",
+      "accessible_same_source_reproduction_url": "https://www.laohu8.com/m/post/400261677977968",
+      "original_publish_time_reconfirmed_20261001": true
+    },
+    {
+      "id": "BYD-N",
+      "cluster": "BYD",
+      "kind": "news_report",
+      "publisher": "第一财经",
+      "original_publisher": "第一财经",
+      "published_at": "2025-03-24T23:46:59+08:00",
+      "url": "https://www.yicai.com/news/102532048.html",
+      "title": "比亚迪2024年净利润增长超3成，但经营活动现金流降幅超20%",
+      "locator": "正文开头财报数据与经营现金流段落",
+      "summary": "报道给出比亚迪2024年营业收入7771.02亿元、净利润402.54亿元，净利润同比增长34%；经营活动产生的现金流量净额同比下降超过20%。",
+      "retrieved_on": "2026-09-23",
+      "representation": "assistant-authored factual paraphrase; not a verbatim document or full-text corpus",
+      "reviewed_on": "2026-10-01",
+      "reviewer_type": "AI-assisted source audit; no independent human validation",
+      "current_access": "linked document reopened in 2026-10-01 audit",
+      "original_locator_verified_20261001": true,
+      "verification": "AI-assisted paraphrase against available source; independent human review pending"
+    }
+  ],
+  "claims": [
+    {
+      "id": "C01",
+      "cluster": "SAN",
+      "claim": "截至2025年10月16日，三花智控已经获得特斯拉价值6.85亿美元的人形机器人执行器订单。"
+    },
+    {
+      "id": "C02",
+      "cluster": "SAN",
+      "claim": "三花智控发布的澄清公告否认了机器人大额订单传闻。"
+    },
+    {
+      "id": "C03",
+      "cluster": "SAN",
+      "claim": "三花智控2025年机器人业务全年营业收入为50亿元。"
+    },
+    {
+      "id": "C04",
+      "cluster": "ZHE",
+      "claim": "截至2025年2月6日该公司公告披露时，浙江东方与其基金板块管理的相关私募基金中，至少有一方直接或间接投资了杭州深度求索人工智能基础技术研究有限公司。"
+    },
+    {
+      "id": "C05",
+      "cluster": "ZHE",
+      "claim": "浙江东方2024年归母净利润业绩预告为9.47亿元。"
+    },
+    {
+      "id": "C06",
+      "cluster": "ZHE",
+      "claim": "截至2025年2月6日，浙江东方基金板块对北京深度搜索科技有限公司的合计持股比例为40%。"
+    },
+    {
+      "id": "C07",
+      "cluster": "BYD",
+      "claim": "比亚迪2024年营业收入约为7771.02亿元。"
+    },
+    {
+      "id": "C08",
+      "cluster": "BYD",
+      "claim": "比亚迪2024年经营活动现金流量净额同比增长21.37%。"
+    },
+    {
+      "id": "C09",
+      "cluster": "BYD",
+      "claim": "比亚迪2025年归属于上市公司股东的净利润同比增长34%。"
+    }
+  ]
+}

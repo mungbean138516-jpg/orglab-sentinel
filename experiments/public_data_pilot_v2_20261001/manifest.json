@@ -1,0 +1,24 @@
+{
+  "dataset_version": "v2-20261001-candidate",
+  "status": "candidate_not_run",
+  "prepared_on": "2026-10-01",
+  "derived_from_commit": "b6d087bdf5de1d6151385b6f7b56fdc4de65e6fd",
+  "hash_meaning": "prepared candidate bytes; not proof of pre-inference freeze",
+  "candidate_sha256": {
+    "sources.json": "b7c115ab4c0bf137e58253117e51c90409715a8e0eb6cb7169e8a3ed7bb7ffbc",
+    "annotations.json": "05ab236089d1ee1a65632d2d9284e568af7a5f2ec82f6dc3b75c52f4cb5ba7b6",
+    "inputs/single_source.json": "df620b3e2aaffbf8c521e8836977cb817809e2cdae0a6a0d7fc2658de866fcb8",
+    "inputs/multi_source.json": "ee17c2187ac8783f2c5d97c5a0dc93d019903e917bbcf02b2cf5ac4a328b47d1",
+    "inputs/evidence_aware.json": "2d593c7bf5b0e3846dbc05f9c79a6b73673963e9e7d23e5d3bc57923ae478d8d",
+    "run_status.json": "537ef218fd5b0dc6534055031313cdd0f708a5588bcfee1b76e484e4397d2ffd",
+    "PROTOCOL.md": "599926a18b569d7e8a0694e4e4f08433e4c5e02b8d1866a6233779b081934efb",
+    "SOURCE_AUDIT.md": "ea606cf455575d4b194a8bef7dbdb001c6086af7ccebe7994fe8b35213d56161",
+    "CHANGELOG.md": "505c11fa34d3685ccaa945500d60f897dd7dbc9eb60856f27d630a329707ca2b",
+    "README.md": "5820001ac4b3f7ed4df36b8c9b641d0c8bc43b9c2847413a15a3120bbc93724e",
+    "evaluate.py": "fe292f8a2c12726f8e66f3ff4a7e4baec3f0076a49401646ed10885f8957a89f",
+    "scoring_v1.py": "a059742559c5e61f9b688e293f6b510b8a275c491a490f3fd307cb68a81bfe6e"
+  },
+  "human_review_status": "pending_for_all_nine",
+  "new_prediction_batches": 0,
+  "new_outputs_saved": 0
+}

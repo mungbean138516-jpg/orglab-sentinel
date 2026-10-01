@@ -22,6 +22,18 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify public-data pilots
+        run: |
+          python3 -m unittest discover -s experiments/public_data_pilot_20260923 -p 'test_*.py' -v
+          python3 scripts/verify_public_data_pilot.py
+          python3 experiments/public_data_pilot_v2_20261001/evaluate.py --verify-only
+          python3 -m unittest discover -s experiments/public_data_pilot_v2_20261001 -p 'test_*.py' -v
+
       - name: Set up Node.js 22
         uses: actions/setup-node@v4
         with:
