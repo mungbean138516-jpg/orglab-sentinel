@@ -1,0 +1,274 @@
+[
+  {
+    "id": "C01",
+    "cluster": "SAN",
+    "claim_origin": "reported_allegation_normalized",
+    "gold_evidence_ids": [
+      "SAN-P"
+    ],
+    "expected_conflict_pairs": [],
+    "claim": "截至2025年10月16日，三花智控已经获得特斯拉价值6.85亿美元的人形机器人执行器订单。",
+    "assistant_proposed_full_packet_label": "Contradicted",
+    "prior_frozen_full_packet_label": "Contradicted",
+    "prior_frozen_condition_labels": {
+      "single_source": "Insufficient Evidence",
+      "multi_source": "Contradicted",
+      "evidence_aware": "Contradicted"
+    },
+    "human_label": null,
+    "human_reviewer": null,
+    "human_review_date": null,
+    "label_status": "assistant proposal only; independent human review pending",
+    "scoring_eligible": false,
+    "change_note": "恢复报道原币种；明确截止日和同一传闻的对应关系，后者待人工复核。",
+    "alignment_issue": "Issuer notice denies a broad large robot-order rumor but does not name Tesla, 6.85亿美元 or Optimus; exact correspondence to the news item needs human/source confirmation.",
+    "human_full_packet_label": null,
+    "human_by_condition": {
+      "single_source": null,
+      "multi_source": null,
+      "evidence_aware": null
+    }
+  },
+  {
+    "id": "C02",
+    "cluster": "SAN",
+    "claim_origin": "benchmark_authored_document_claim",
+    "gold_evidence_ids": [
+      "SAN-P"
+    ],
+    "expected_conflict_pairs": [],
+    "claim": "三花智控发布的澄清公告否认了机器人大额订单传闻。",
+    "assistant_proposed_full_packet_label": "Supported",
+    "prior_frozen_full_packet_label": "Supported",
+    "prior_frozen_condition_labels": {
+      "single_source": "Insufficient Evidence",
+      "multi_source": "Supported",
+      "evidence_aware": "Supported"
+    },
+    "human_label": null,
+    "human_reviewer": null,
+    "human_review_date": null,
+    "label_status": "assistant proposal only; independent human review pending",
+    "scoring_eligible": false,
+    "change_note": "题目暂不改；仍待人工逐条判断。",
+    "human_full_packet_label": null,
+    "human_by_condition": {
+      "single_source": null,
+      "multi_source": null,
+      "evidence_aware": null
+    }
+  },
+  {
+    "id": "C03",
+    "cluster": "SAN",
+    "claim_origin": "benchmark_authored_scope_probe",
+    "gold_evidence_ids": [
+      "SAN-N",
+      "SAN-P"
+    ],
+    "expected_conflict_pairs": [],
+    "claim": "三花智控2025年机器人业务全年营业收入为50亿元。",
+    "assistant_proposed_full_packet_label": "Insufficient Evidence",
+    "prior_frozen_full_packet_label": "Insufficient Evidence",
+    "prior_frozen_condition_labels": {
+      "single_source": "Insufficient Evidence",
+      "multi_source": "Insufficient Evidence",
+      "evidence_aware": "Insufficient Evidence"
+    },
+    "human_label": null,
+    "human_reviewer": null,
+    "human_review_date": null,
+    "label_status": "assistant proposal only; independent human review pending",
+    "scoring_eligible": false,
+    "change_note": "直接事实命题；按截至2025-10-16给定材料评估，去掉能够确定的元判断。",
+    "human_full_packet_label": null,
+    "human_by_condition": {
+      "single_source": null,
+      "multi_source": null,
+      "evidence_aware": null
+    }
+  },
+  {
+    "id": "C04",
+    "cluster": "ZHE",
+    "claim_origin": "reported_assertion_normalized",
+    "gold_evidence_ids": [
+      "ZHE-N",
+      "ZHE-P"
+    ],
+    "expected_conflict_pairs": [
+      [
+        "ZHE-N",
+        "ZHE-P"
+      ]
+    ],
+    "claim": "截至2025年2月6日该公司公告披露时，浙江东方与其基金板块管理的相关私募基金中，至少有一方直接或间接投资了杭州深度求索人工智能基础技术研究有限公司。",
+    "assistant_proposed_full_packet_label": "Contradicted",
+    "prior_frozen_full_packet_label": "Contradicted",
+    "prior_frozen_condition_labels": {
+      "single_source": "Supported",
+      "multi_source": "Contradicted",
+      "evidence_aware": "Contradicted"
+    },
+    "human_label": null,
+    "human_reviewer": null,
+    "human_review_date": null,
+    "label_status": "assistant proposal only; independent human review pending",
+    "scoring_eligible": false,
+    "change_note": "明确主体、公告时点和至少一方的量词；共同采用披露优先的有限核验规则。",
+    "human_full_packet_label": null,
+    "human_by_condition": {
+      "single_source": null,
+      "multi_source": null,
+      "evidence_aware": null
+    }
+  },
+  {
+    "id": "C05",
+    "cluster": "ZHE",
+    "claim_origin": "benchmark_authored_document_claim",
+    "gold_evidence_ids": [
+      "ZHE-P"
+    ],
+    "expected_conflict_pairs": [],
+    "claim": "浙江东方2024年归母净利润业绩预告为9.47亿元。",
+    "assistant_proposed_full_packet_label": "Supported",
+    "prior_frozen_full_packet_label": "Supported",
+    "prior_frozen_condition_labels": {
+      "single_source": "Insufficient Evidence",
+      "multi_source": "Supported",
+      "evidence_aware": "Supported"
+    },
+    "human_label": null,
+    "human_reviewer": null,
+    "human_review_date": null,
+    "label_status": "assistant proposal only; independent human review pending",
+    "scoring_eligible": false,
+    "change_note": "题目暂不改；仍待人工逐条判断。",
+    "human_full_packet_label": null,
+    "human_by_condition": {
+      "single_source": null,
+      "multi_source": null,
+      "evidence_aware": null
+    }
+  },
+  {
+    "id": "C06",
+    "cluster": "ZHE",
+    "claim_origin": "benchmark_authored_scope_probe",
+    "gold_evidence_ids": [
+      "ZHE-P"
+    ],
+    "expected_conflict_pairs": [],
+    "claim": "截至2025年2月6日，浙江东方基金板块对北京深度搜索科技有限公司的合计持股比例为40%。",
+    "assistant_proposed_full_packet_label": "Insufficient Evidence",
+    "prior_frozen_full_packet_label": "Insufficient Evidence",
+    "prior_frozen_condition_labels": {
+      "single_source": "Insufficient Evidence",
+      "multi_source": "Insufficient Evidence",
+      "evidence_aware": "Insufficient Evidence"
+    },
+    "human_label": null,
+    "human_reviewer": null,
+    "human_review_date": null,
+    "label_status": "assistant proposal only; independent human review pending",
+    "scoring_eligible": false,
+    "change_note": "明确合计口径；40%是构造数字，给定公告没有该比例，不是声称真实比例。",
+    "human_full_packet_label": null,
+    "human_by_condition": {
+      "single_source": null,
+      "multi_source": null,
+      "evidence_aware": null
+    }
+  },
+  {
+    "id": "C07",
+    "cluster": "BYD",
+    "claim_origin": "reported_numeric_claim_normalized",
+    "gold_evidence_ids": [
+      "BYD-N",
+      "BYD-P"
+    ],
+    "expected_conflict_pairs": [],
+    "claim": "比亚迪2024年营业收入约为7771.02亿元。",
+    "assistant_proposed_full_packet_label": "Supported",
+    "prior_frozen_full_packet_label": "Supported",
+    "prior_frozen_condition_labels": {
+      "single_source": "Supported",
+      "multi_source": "Supported",
+      "evidence_aware": "Supported"
+    },
+    "human_label": null,
+    "human_reviewer": null,
+    "human_review_date": null,
+    "label_status": "assistant proposal only; independent human review pending",
+    "scoring_eligible": false,
+    "change_note": "题目暂不改；仍待人工逐条判断。",
+    "human_full_packet_label": null,
+    "human_by_condition": {
+      "single_source": null,
+      "multi_source": null,
+      "evidence_aware": null
+    }
+  },
+  {
+    "id": "C08",
+    "cluster": "BYD",
+    "claim_origin": "benchmark_authored_direction_mutation",
+    "gold_evidence_ids": [
+      "BYD-N",
+      "BYD-P"
+    ],
+    "expected_conflict_pairs": [],
+    "claim": "比亚迪2024年经营活动现金流量净额同比增长21.37%。",
+    "assistant_proposed_full_packet_label": "Contradicted",
+    "prior_frozen_full_packet_label": "Contradicted",
+    "prior_frozen_condition_labels": {
+      "single_source": "Contradicted",
+      "multi_source": "Contradicted",
+      "evidence_aware": "Contradicted"
+    },
+    "human_label": null,
+    "human_reviewer": null,
+    "human_review_date": null,
+    "label_status": "assistant proposal only; independent human review pending",
+    "scoring_eligible": false,
+    "change_note": "题目暂不改；仍待人工逐条判断。",
+    "human_full_packet_label": null,
+    "human_by_condition": {
+      "single_source": null,
+      "multi_source": null,
+      "evidence_aware": null
+    }
+  },
+  {
+    "id": "C09",
+    "cluster": "BYD",
+    "claim_origin": "benchmark_authored_future_extrapolation",
+    "gold_evidence_ids": [
+      "BYD-N",
+      "BYD-P"
+    ],
+    "expected_conflict_pairs": [],
+    "claim": "比亚迪2025年归属于上市公司股东的净利润同比增长34%。",
+    "assistant_proposed_full_packet_label": "Insufficient Evidence",
+    "prior_frozen_full_packet_label": "Insufficient Evidence",
+    "prior_frozen_condition_labels": {
+      "single_source": "Insufficient Evidence",
+      "multi_source": "Insufficient Evidence",
+      "evidence_aware": "Insufficient Evidence"
+    },
+    "human_label": null,
+    "human_reviewer": null,
+    "human_review_date": null,
+    "label_status": "assistant proposal only; independent human review pending",
+    "scoring_eligible": false,
+    "change_note": "直接事实命题；只允许2025-03-25及以前的给定材料，去掉可以确认的元判断。",
+    "human_full_packet_label": null,
+    "human_by_condition": {
+      "single_source": null,
+      "multi_source": null,
+      "evidence_aware": null
+    }
+  }
+]

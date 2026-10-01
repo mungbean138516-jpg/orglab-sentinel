@@ -1,0 +1,21 @@
+{
+  "dataset_version": "v2-20261001-candidate",
+  "status": "candidate_not_run",
+  "new_prediction_batches": 0,
+  "new_outputs_saved": 0,
+  "new_metrics": null,
+  "human_full_packet_labels_completed": 0,
+  "human_condition_labels_completed": 0,
+  "model_provider_for_new_run": null,
+  "exact_model_snapshot_for_new_run": null,
+  "temperature_for_new_run": null,
+  "top_p_for_new_run": null,
+  "seed_for_new_run": null,
+  "token_usage_for_new_run": null,
+  "paid_model_api_calls": 0,
+  "notes": [
+    "No v2 model run has occurred; the null settings describe an unselected future runtime.",
+    "C01 exact news-rumor versus issuer-denial alignment remains unresolved.",
+    "September 23 outputs cannot be rescored as v2 predictions."
+  ]
+}
