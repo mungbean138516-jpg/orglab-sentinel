@@ -1,0 +1,95 @@
+{
+  "condition": "single_source",
+  "predictions": [
+    {
+      "id": "C01",
+      "label": "Insufficient Evidence",
+      "confidence": 0.99,
+      "citations": ["SAN-N"],
+      "conflicts": [],
+      "unknowns": ["订单传闻是否属实", "实际订单金额及人民币折算金额"],
+      "abstain": true,
+      "rationale": "材料仅记载6.85亿美元订单传闻及公司正在核实的回应，未确认已经获得约50亿元订单。"
+    },
+    {
+      "id": "C02",
+      "label": "Insufficient Evidence",
+      "confidence": 0.99,
+      "citations": ["SAN-N"],
+      "conflicts": [],
+      "unknowns": ["是否发布了澄清公告", "澄清公告是否否认该订单传闻"],
+      "abstain": true,
+      "rationale": "材料提供的是证券部正在核实传闻的电话回应，没有提供澄清公告或明确否认订单的内容。"
+    },
+    {
+      "id": "C03",
+      "label": "Insufficient Evidence",
+      "confidence": 0.99,
+      "citations": ["SAN-N"],
+      "conflicts": [],
+      "unknowns": ["三花智控2025年机器人业务全年营收"],
+      "abstain": true,
+      "rationale": "未获确认的订单传闻不能确定2025年机器人业务全年营收，材料也未提供该年度业务营收数据。"
+    },
+    {
+      "id": "C04",
+      "label": "Supported",
+      "confidence": 0.95,
+      "citations": ["ZHE-N"],
+      "conflicts": [],
+      "unknowns": ["所称投资的原始投资文件未提供"],
+      "abstain": false,
+      "rationale": "2025年2月5日的评论明确声称浙江东方通过旗下基金参与DeepSeek天使轮投资，因此给定材料支持截至2月6日已直接或间接投资的陈述。"
+    },
+    {
+      "id": "C05",
+      "label": "Insufficient Evidence",
+      "confidence": 0.99,
+      "citations": [],
+      "conflicts": [],
+      "unknowns": ["浙江东方2024年归母净利润业绩预告金额"],
+      "abstain": true,
+      "rationale": "材料没有提供浙江东方2024年归母净利润业绩预告，无法判断9.47亿元这一金额。"
+    },
+    {
+      "id": "C06",
+      "label": "Insufficient Evidence",
+      "confidence": 0.99,
+      "citations": ["ZHE-N"],
+      "conflicts": [],
+      "unknowns": ["北京深度搜索科技有限公司与材料所述DeepSeek的关系", "相关基金对北京深度搜索科技有限公司的实际持股比例"],
+      "abstain": true,
+      "rationale": "材料只提及对DeepSeek的投资声称，未说明北京深度搜索科技有限公司这一主体及相关基金的准确持股比例。"
+    },
+    {
+      "id": "C07",
+      "label": "Supported",
+      "confidence": 0.99,
+      "citations": ["BYD-N"],
+      "conflicts": [],
+      "unknowns": [],
+      "abstain": false,
+      "rationale": "材料明确给出比亚迪2024年营收为7771.02亿元，与陈述一致。"
+    },
+    {
+      "id": "C08",
+      "label": "Contradicted",
+      "confidence": 0.99,
+      "citations": ["BYD-N"],
+      "conflicts": [],
+      "unknowns": ["经营活动现金流量净额同比下降的准确百分比"],
+      "abstain": false,
+      "rationale": "材料明确说明比亚迪2024年经营活动现金流量净额同比下降超过20%，反驳了同比增长21.37%的陈述。"
+    },
+    {
+      "id": "C09",
+      "label": "Insufficient Evidence",
+      "confidence": 0.99,
+      "citations": ["BYD-N"],
+      "conflicts": [],
+      "unknowns": ["比亚迪2025年归母净利润及其同比增长率"],
+      "abstain": true,
+      "rationale": "材料中的34%是2024年归母净利润同比增长率，没有提供足以确认2025年仍增长34%的证据。"
+    }
+  ]
+}

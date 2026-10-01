@@ -1,0 +1,87 @@
+{
+  "date": "2026-09-23",
+  "inference_status": "completed",
+  "batches_attempted": 3,
+  "batches_completed": 3,
+  "predictions_expected": 27,
+  "predictions_saved": 27,
+  "retries": 0,
+  "paid_model_api_calls": 0,
+  "observed_quota_error": false,
+  "observed_output_truncation": false,
+  "exact_tokens": null,
+  "exact_money_charge": null,
+  "remaining_account_quota": null,
+  "output_note": "Saved original structured model answers, not hidden reasoning or a full conversation transcript.",
+  "runner_contexts": [
+    {
+      "task_name": "/root/pilot_single_source",
+      "history_fork": "none",
+      "model_override": null,
+      "output_file": "outputs/single_source.json"
+    },
+    {
+      "task_name": "/root/pilot_multi_source",
+      "history_fork": "none",
+      "model_override": null,
+      "output_file": "outputs/multi_source.json"
+    },
+    {
+      "task_name": "/root/pilot_evidence_aware",
+      "history_fork": "none",
+      "model_override": null,
+      "output_file": "outputs/evidence_aware.json"
+    }
+  ],
+  "environment": {
+    "python": "3.12.14",
+    "node": "v24.19.0"
+  },
+  "post_run_sha256": {
+    "outputs/evidence_aware.json": "bf400932acfd350f3f488ad46953b6f1485bbf7a7cf0e6f6aadc0cd4263f0c10",
+    "outputs/multi_source.json": "d962088d918aa1a5c3d93c73fdc170d2055fa10260aa2f31ab82000c28a8a442",
+    "outputs/single_source.json": "808d34a46d2fc93c90ea52461ecb72253f8994abb57b7812e508f24402326256"
+  },
+  "issues": [
+    {
+      "status": "resolved",
+      "kind": "source_access",
+      "detail": "Direct Zhejiang Orient exchange PDF retrieval was unavailable during sourcing; used the issuer notice republished by Shanghai Securities News and retained the actual working URL."
+    },
+    {
+      "status": "limitation",
+      "kind": "model_metadata",
+      "detail": "Exact model snapshot, sampling settings, seed and precise token/account usage were not exposed."
+    },
+    {
+      "status": "limitation",
+      "kind": "annotations",
+      "detail": "Assistant-authored reference labels and shortened source packets require independent human review; only three event clusters."
+    },
+    {
+      "status": "observed",
+      "kind": "prompt_comparison",
+      "detail": "Multi-source and evidence-aware labels were identical for all nine cases; no label-level improvement demonstrated."
+    },
+    {
+      "status": "review_needed",
+      "kind": "extra_conflict",
+      "detail": "Evidence-aware C01 adds a telephone-response versus no-media-interview tension. It may reflect different meanings of interview; it is not the scored order-claim conflict and is not certified as a factual contradiction."
+    },
+    {
+      "status": "nonblocking",
+      "kind": "environment",
+      "detail": "npm emitted an unknown http-proxy environment config warning; tests and build still passed."
+    }
+  ],
+  "validation": {
+    "python_metric_unit_tests": 6,
+    "original_project_tests": 19,
+    "original_project_build": "passed"
+  },
+  "pending_original_audit_findings": [
+    "Missing synthesis.conflicts accepted by current mock validation",
+    "Incorrect source brief ID may pass cross-reference checks",
+    "Deleting claims may cause a TypeError instead of a structured validation result"
+  ]
+}

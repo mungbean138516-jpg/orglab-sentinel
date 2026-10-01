@@ -1,0 +1,57 @@
+2026-09-23
+Python metric checks: python3 -m unittest discover -s experiments/public_data_pilot_20260923 -p test_*.py -v
+6 tests passed. Cases cover missing predictions, class macro F1, undefined denominators, invalid citations, nonfinite confidence, duplicate outputs and invisible conflicts.
+
+Original project: npm ci --no-audit --no-fund then npm run check
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> orglab-sentinel-prototype@0.4.0 check
+> npm test && npm run build
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> orglab-sentinel-prototype@0.4.0 test
+> node --test
+
+✔ every canonical scenario satisfies the mock pipeline contract (4.085474ms)
+✔ all versioned JSON contract files parse successfully (0.653682ms)
+✔ canonical and fault-injected fixtures satisfy all JSON Schemas (29.889216ms)
+✔ news and filing specialists run in parallel before the supervisor (0.273964ms)
+✔ an unverified rumor is quarantined and produces no portfolio action (0.243618ms)
+✔ patch ledger preserves the source-to-report evidence chain (0.385427ms)
+✔ each materialized run has unique artifact IDs and records user review as a new Patch (0.327902ms)
+✔ news timeout degrades the news specialist without erasing the data brief (0.254094ms)
+✔ conflicting evidence is preserved and quarantined through the user report (0.226594ms)
+✔ organization experiment is deterministic for the same controls (0.4824ms)
+✔ dynamic risk organization recovers best from a source timeout (0.206183ms)
+✔ A-share demo identifiers are fictional, schema-compatible, and weights total 100 (0.243097ms)
+✔ every report action is non-execution and no target range survives in v1.2 (1.136543ms)
+✔ stale disclosure data is isolated instead of treated as current evidence (0.220194ms)
+✔ duplicate-source fault collapses repeated posts into one evidence cluster (0.210369ms)
+✔ contract failure rejects the source Patch and still produces a safe report (0.344377ms)
+✔ runtime validator rejects an EvidenceBrief with a missing locator (0.132375ms)
+✔ every claim references evidence in its own brief and is summarized in the report (0.297528ms)
+✔ cross-contract validation catches a Supervisor that drops an unknown claim (0.382323ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 298.605473
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> orglab-sentinel-prototype@0.4.0 build
+> vite build
+
+vite v8.1.5 building client environment for production...
+[2K
+transforming...✓ 1871 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.62 kB │ gzip:   0.44 kB
+dist/assets/index-B6XLA8ee.css   44.15 kB │ gzip:   9.06 kB
+dist/assets/index-CSUrFM8J.js   407.51 kB │ gzip: 125.48 kB
+
+✓ built in 523ms
