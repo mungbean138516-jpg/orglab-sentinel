@@ -1,3 +1,177 @@
+[English](#english) · [简体中文](#zh-cn)
+
+<a name="english"></a>
+
+# OrgLab Sentinel
+
+### A prototype for multi-source evidence verification and risk explanation in China's A-share market
+
+A public-discussion agent and a disclosure agent collect evidence independently. A supervisor preserves agreements, conflicts, and unknowns. A risk-explanation agent explains the evidence without making decisions for the user.
+
+[![CI](https://github.com/mungbean138516-jpg/orglab-sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/mungbean138516-jpg/orglab-sentinel/actions/workflows/ci.yml)
+![Node](https://img.shields.io/badge/Node-%3E%3D22.12-339933?logo=nodedotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)
+![Data](https://img.shields.io/badge/data-fixed%20MOCK-F59E0B)
+![Trading](https://img.shields.io/badge/trading-disabled-64748B)
+![Contracts](https://img.shields.io/badge/contracts-v1.2-22D3D8)
+
+[Live demo](https://mungbean138516-jpg.github.io/orglab-sentinel/) · [90-second demo script (Chinese)](docs/roadshow/07_DEMO_SCRIPT.md) · [Roadshow materials (Chinese)](docs/roadshow/README.md) · [Architecture (Chinese)](docs/roadshow/01_SYSTEM_ARCHITECTURE.md)
+
+> [!IMPORTANT]
+> **Proof of concept only. Real-world deployment would require appropriate qualifications and compliance review.** The web demo uses fictional A-share securities and fixed mock data. It does not access real accounts, connect to brokers, recommend securities, forecast returns, or execute trades.
+
+## Overview
+
+OrgLab Sentinel is a reusable evidence-handoff and risk-explanation engine, not an AI trading app. The A-share market is the first test case. The prototype distinguishes facts supported by formal disclosures from inferences drawn from public discussion and questions the available evidence cannot answer, with the goal of reducing errors driven by information gaps and amplified sentiment.
+
+The demo includes three fictional scenarios: a revised earnings forecast, an exchange inquiry, and a supply-chain rumor. It traces evidence IDs, source tiers, freshness, duplicate reports that share an origin, disagreements, and unknowns. Charts show verification thresholds, simulated attention weights, and the mix of confirmed, unverified, and indeterminate items. Crossing a threshold triggers verification, not a price prediction. The report drawer provides the full evidence trail; its human checkpoint records only that the user read the risk notice. The interface never presents a planned integration as connected or live.
+
+The organization experiment compares a flat group chat, a supervisor-and-specialists model, and dynamic risk control under identical inputs. Failure scenarios include a source timeout, stale disclosures, duplicate syndication, conflicting evidence, and failed output validation.
+
+| Status | Meaning | Examples |
+| --- | --- | --- |
+| `IMPLEMENTED` | Working repository code | Runtime JSON Schema checks, patch ledger, human checkpoint |
+| `MOCK ACTIVE` | Runs on fixed fictional inputs | A-share events, disclosures, trending topics, charts |
+| `PLANNED` | Designed, not connected or invoked | Alibaba Cloud Bailian, Qwen, ModelScope / EvalScope |
+| `AUTH REQUIRED` | Optional external tool requires server-side authorization | Tianyancha MCP |
+| `ROADMAP` | Future product direction | DingTalk human review, Tongyi / Quark user entry points |
+
+## Workflow and architecture
+
+```mermaid
+flowchart LR
+    E["Fictional A-share event"] --> N["Public-discussion agent"]
+    E --> D["Disclosure agent"]
+    N --> V["EvidenceBrief v1.2 validation"]
+    D --> V
+    V --> S["Supervisor: agreements, conflicts, unknowns"]
+    S --> R["Risk explanation"]
+    R --> H["User review: read-only, no trades"]
+```
+
+| Role | Responsibility | Boundary |
+| --- | --- | --- |
+| Public-discussion specialist | Finds, ranks, and deduplicates news, trends, and public discussion; isolates rumors | Popularity is not evidence of fact; no trade recommendations |
+| Disclosure specialist | Checks exchange disclosures, financial fields, and corporate identity | No target prices or allocation advice |
+| Supervisor | Compares the two briefs and preserves disagreements and missing information | Cannot invent facts or silently resolve conflicts |
+| Risk explanation | Explains the evidence status and lists what the user can verify | No security recommendations, broker access, or orders |
+
+Today these are logical roles in one React browser app, driven by a deterministic JavaScript state machine, not deployed agents or four live models. AJV validates `EvidenceBrief v1.2`, `SupervisorSynthesis v1.2`, and `UserRiskReport v1.2` at runtime; repository code also checks references across contracts.
+
+## Proposed Alibaba architecture
+
+```mermaid
+flowchart TD
+    U["Web / Tongyi / Quark / DingTalk entry points (ROADMAP)"] --> B["Bailian Workflow (PLANNED)"]
+    B --> Q1["Qwen: public-discussion role (PLANNED)"]
+    B --> Q2["Qwen: disclosure role (PLANNED)"]
+    Q1 --> M1["Chinese trends MCP (PLANNED)"]
+    Q2 --> M2["Tianyancha MCP (AUTH REQUIRED)"]
+    Q2 --> O["Exchange / statutory disclosure adapter (PLANNED)"]
+    M1 --> C["Deterministic evidence contracts (IMPLEMENTED)"]
+    M2 --> C
+    O --> C
+    C --> Q3["Supervisor and risk-explanation roles (PLANNED)"]
+    Q3 --> H["Human review checkpoint"]
+```
+
+The proposed architecture uses Bailian to coordinate Qwen roles. MCP is a tool-connection protocol, not an agent or a guarantee of data authenticity: trend tools surface leads, Tianyancha supports corporate-fact cross-checks, and exchange or statutory disclosures take priority for confirmation. ModelScope and EvalScope would provide open resources and evaluation support; DingTalk is a possible human-review channel. None of these external integrations is live. See the [architecture](docs/roadshow/01_SYSTEM_ARCHITECTURE.md), [contracts and safety boundaries](docs/roadshow/04_CONTRACTS_AND_SAFETY.md), and [Alibaba technology map](docs/roadshow/05_ALIBABA_TECHNOLOGY_MAP.md).
+
+## Independent public-data pilot
+
+A separate September 23, 2026 pilot used short summaries of six public news or corporate disclosure documents, with nine Chinese-language claim cases and 27 saved model outputs. Three independent Codex contexts in ChatGPT Work ran one batch per condition. No Qwen, Bailian, or paid model API was called; no model was trained. The pilot is not integrated into the demo.
+
+| Pilot metric | Single source | Multiple sources | Multiple sources with evidence-checking instructions |
+| --- | --- | --- | --- |
+| Macro-F1 against provisional labels based on all sources | 0.522 | 1.000 | 1.000 |
+| Outputs with valid source IDs | 8/9 | 9/9 | 9/9 |
+| Abstention decisions matching labels based on the evidence visible in each condition | 9/9 | 9/9 | 9/9 |
+
+Single- and multi-source labels differed on 4/9 claims; the two multi-source conditions differed on none. All three scored Macro-F1 1.000 against their own evidence-scoped reference labels. The observed difference came primarily from access to additional disclosures; it does not establish an improvement from the additional instructions. The set covers only three events, and six claims are explicitly constructed test cases. The assistant-proposed labels await independent human review, and self-reported confidence was not calibrated. The small, easy set does not establish real-world generalization. No user study tested whether people would trust the system more or make better decisions.
+
+The [pilot record](experiments/public_data_pilot_20260923/README.md) contains sources, labeling rationale, fixed prompts, raw outputs, and reproducible metrics. A [case review](experiments/public_data_pilot_20260923/review/README.md) identified summaries and questions to revise; original inputs and outputs remain frozen. The [October 1 revised candidate and source audit](experiments/public_data_pilot_v2_20261001/README.md) adds integrity checks but has no new model outputs or metrics; all nine labels still await human review.
+
+The project lead describes leading a seven-person internship team: breaking down an ambiguous problem, designing modules and the source, evidence, conflict, unknown, and human-review logic, and iterating on inputs, prompts, and module structure. The lead and an AI assistant conducted the later pilot separately; the assistant assembled source summaries, proposed labels, and ran the pilot. It was not part of a deployed Alibaba internship product. See the [advisor progress report](docs/ADVISOR_PROGRESS_20261001.md).
+
+## Run locally
+
+Requires Node.js `>=22.12.0`.
+
+```bash
+git clone https://github.com/mungbean138516-jpg/orglab-sentinel.git
+cd orglab-sentinel
+npm ci
+npm run dev
+```
+
+Open the address Vite prints, normally `http://localhost:5173/`.
+
+```bash
+npm run check
+```
+
+This runs contract, evidence-trace, failure-handling, and organization experiment tests, then creates a production build. GitHub Actions runs the same check on pushes and pull requests. CI also runs Python tests for pilot metrics, verifies SHA-256 checks around recomputing the saved results, and checks the revised candidate dataset. The checks do not call any models.
+
+## 90-second walkthrough
+
+1. In **风险情报台** (Risk Intelligence Desk), select **业绩预告修正** (Revised Earnings Forecast) and start the fixed replay.
+2. Show the two specialists working in parallel and submitting their respective `EvidenceBrief v1.2` reports.
+3. Expand the trend chart and explain that crossing the threshold triggers verification, not a price forecast.
+4. Open **查看证据与完整报告** (View Evidence and Full Report) to show facts, conflicts, unknowns, and evidence IDs.
+5. Select **我已阅读风险提示** (I Have Read the Risk Notice). This does not place a trade.
+6. In **组织实验** (Organization Experiment), inject an evidence conflict or contract failure to demonstrate how the system handles it.
+7. In **目标架构** (Target Architecture), outline the proposed responsibilities of Bailian, Qwen, ModelScope, MCP, and DingTalk.
+
+The [full demo script](docs/roadshow/07_DEMO_SCRIPT.md) includes narration, recording cues, and fallback paths.
+
+## Repository map
+
+| Path | Purpose |
+| --- | --- |
+| `src/App.jsx` | Four interactive views and their state |
+| `src/components/RiskVisuals.jsx` | Attention-weight, threshold, and evidence-composition charts |
+| `src/data/demoData.js` | Fictional fixtures, agent metadata, and integration statuses |
+| `src/lib/contracts.js` | AJV validation and cross-contract reference checks |
+| `src/lib/simulation.js` | State machine, failure behavior, patch ledger, and organization experiments |
+| `src/styles.css` | Responsive layout and semantic colors |
+| `test/simulation.test.js` | Contract, evidence-trace, failure-handling, and experiment tests |
+| `docs/contracts/` | Four v1.2 JSON schemas |
+| `docs/roadshow/` | Architecture, pitch materials, compliance, and integration notes |
+| `.github/workflows/` | CI and GitHub Pages workflows |
+
+### Roadshow and slide materials
+
+The roadshow folder separates what is implemented, what is proposed, and what can be used in the slides.
+
+[Architecture](docs/roadshow/01_SYSTEM_ARCHITECTURE.md) · [Roles and permissions](docs/roadshow/02_AGENT_HIERARCHY.md) · [Event flow](docs/roadshow/03_END_TO_END_EVENT_FLOW.md) · [Contracts and safety](docs/roadshow/04_CONTRACTS_AND_SAFETY.md) · [Alibaba technology map](docs/roadshow/05_ALIBABA_TECHNOLOGY_MAP.md) · [A-share adapter](docs/roadshow/06_A_SHARE_ADAPTER_LAYER.md) · [Demo script](docs/roadshow/07_DEMO_SCRIPT.md) · [Claims and compliance](docs/roadshow/08_CLAIMS_AND_COMPLIANCE_MATRIX.md) · [Stakeholder decisions](docs/roadshow/09_STAKEHOLDER_FEEDBACK_DECISIONS.md) · [11-slide source map](docs/roadshow/10_PPT_SOURCE_MAP.md) · [Connectors and secrets](docs/roadshow/11_CONNECTOR_SETUP_AND_SECRETS.md)
+
+## Secrets and real integrations
+
+`.env.example` holds placeholders only, not live credentials. Keep `DASHSCOPE_API_KEY`, `MODELSCOPE_ACCESS_TOKEN`, `TIANYANCHA_API_KEY`, and ModelScope Hosted MCP remote URLs server-side. Any future integration should route from the browser through a controlled backend or Bailian to the MCP/data provider. Never expose secrets through `VITE_*` variables, Git, logs, screenshots, recordings, or slides. See [connector setup and secrets](docs/roadshow/11_CONNECTOR_SETUP_AND_SECRETS.md).
+
+## Contributing
+
+Keep `main` runnable. There is no need to create eight issues up front: branch from its latest revision and open a focused draft pull request early.
+
+```bash
+git switch main
+git pull --ff-only
+git switch -c frontend/improve-report-drawer
+npm run check
+```
+
+Coordinate overlapping changes to `App.jsx`, `styles.css`, and shared schemas. Include screenshots or recordings for UI changes. Have a teammate review contract, risk-language, pilot-metric, and connector changes.
+
+## Current limits
+
+This is a front-end prototype, not a production financial system. It has no live market, disclosure, or trends feed; no active Bailian, Qwen, ModelScope, Tianyancha MCP, trend MCP, or DingTalk calls; and no backend authorization, persistent database, identity system, brokerage connection, or trading functionality.
+
+[Jump to Chinese / 跳转中文版](#zh-cn)
+
+---
+
+<a name="zh-cn"></a>
+
 <div align="center">
 
 # OrgLab Sentinel
